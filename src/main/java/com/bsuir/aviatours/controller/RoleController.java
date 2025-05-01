@@ -1,5 +1,7 @@
 package com.bsuir.aviatours.controller;
 
+import com.bsuir.aviatours.dto.ReviewDTO;
+import com.bsuir.aviatours.dto.RoleDTO;
 import com.bsuir.aviatours.model.Role;
 import com.bsuir.aviatours.service.interfaces.EntityService;
 import org.springframework.http.HttpStatus;
@@ -7,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/role")
@@ -19,19 +22,17 @@ public class RoleController {
         this.entityService = entityService;
     }
 
-    @PostMapping("/add")
-    public String add(@RequestBody Role role) {
-        entityService.saveEntity(role);
-        return "success";
+    @GetMapping("/getAll")
+    public List<RoleDTO> getAll() {
+        return entityService.getAllEntities()
+                .stream()
+                .map(RoleDTO::fromEntity)
+                .collect(Collectors.toList());
     }
 
-    @GetMapping("/getAll")
-    public ResponseEntity<?> getAll() {
-        try {
-            List<Role> roles = entityService.getAllEntities();
-            return new ResponseEntity<>(roles, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    @GetMapping("/{id}")
+    public ResponseEntity<RoleDTO> getById(@PathVariable int id) {
+        RoleDTO review = RoleDTO.fromEntity(entityService.findEntityById(id));
+        return ResponseEntity.ok(review);
     }
 }

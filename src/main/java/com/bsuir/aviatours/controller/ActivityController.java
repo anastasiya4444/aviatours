@@ -1,11 +1,13 @@
 package com.bsuir.aviatours.controller;
 
+import com.bsuir.aviatours.dto.ActivityDTO;
 import com.bsuir.aviatours.model.Activity;
 import com.bsuir.aviatours.service.interfaces.EntityService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/activity")
@@ -19,20 +21,23 @@ public class ActivityController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<String> add(@RequestBody Activity activity) {
-        activityEntityService.saveEntity(activity);
+    public ResponseEntity<String> add(@RequestBody ActivityDTO activity) {
+        activityEntityService.saveEntity(activity.toEntity());
         return ResponseEntity.ok("Activity saved successfully");
     }
 
     @GetMapping("/getAll")
-    public List<Activity> getAll() {
-        return activityEntityService.getAllEntities();
+    public List<ActivityDTO> getAll() {
+        return activityEntityService.getAllEntities()
+                .stream()
+                .map(ActivityDTO::fromEntity)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Activity> getById(@PathVariable int id) {
+    public ResponseEntity<ActivityDTO> getById(@PathVariable int id) {
         Activity activity = activityEntityService.findEntityById(id);
-        return ResponseEntity.ok(activity);
+        return ResponseEntity.ok(ActivityDTO.fromEntity(activity));
     }
 
     @DeleteMapping("/{id}")
@@ -43,8 +48,8 @@ public class ActivityController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Activity> update(@RequestBody Activity activity) {
-        Activity updatedUser = activityEntityService.updateEntity(activity);
+    public ResponseEntity<ActivityDTO> update(@RequestBody ActivityDTO activity) {
+        ActivityDTO updatedUser = ActivityDTO.fromEntity(activityEntityService.updateEntity(activity.toEntity()));
         return ResponseEntity.ok(updatedUser);
     }
 }

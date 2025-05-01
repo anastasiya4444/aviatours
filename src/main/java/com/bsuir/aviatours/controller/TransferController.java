@@ -1,11 +1,13 @@
 package com.bsuir.aviatours.controller;
 
+import com.bsuir.aviatours.dto.TransferDTO;
 import com.bsuir.aviatours.model.Transfer;
 import com.bsuir.aviatours.service.interfaces.EntityService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/transfer")
@@ -19,32 +21,35 @@ public class TransferController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<String> add(@RequestBody Transfer transfer) {
-        transferEntityService.saveEntity(transfer);
+    public ResponseEntity<String> add(@RequestBody TransferDTO transfer) {
+        transferEntityService.saveEntity(transfer.toEntity());
         return ResponseEntity.ok("Transfer saved successfully");
     }
 
     @GetMapping("/getAll")
-    public List<Transfer> getAll() {
-        return transferEntityService.getAllEntities();
+    public List<TransferDTO> getAll() {
+        return transferEntityService.getAllEntities()
+                .stream()
+                .map(TransferDTO::fromEntity)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Transfer> getById(@PathVariable int id) {
-        Transfer transfer = transferEntityService.findEntityById(id);
+    public ResponseEntity<TransferDTO> getById(@PathVariable int id) {
+        TransferDTO transfer = TransferDTO.fromEntity(transferEntityService.findEntityById(id));
         return ResponseEntity.ok(transfer);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable int id) {
-        Transfer transfer = transferEntityService.findEntityById(id);
-        transferEntityService.deleteEntity(transfer);
+        TransferDTO transfer = TransferDTO.fromEntity(transferEntityService.findEntityById(id));
+        transferEntityService.deleteEntity(transfer.toEntity());
         return ResponseEntity.ok("Transfer deleted successfully");
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Transfer> update(@RequestBody Transfer transfer1) {
-        Transfer transfer = transferEntityService.updateEntity(transfer1);
+    public ResponseEntity<TransferDTO> update(@RequestBody TransferDTO transfer1) {
+        TransferDTO transfer = TransferDTO.fromEntity(transferEntityService.updateEntity(transfer1.toEntity()));
         return ResponseEntity.ok(transfer);
     }
 }

@@ -1,38 +1,162 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Arial', sans-serif; /* Шрифт Arial */
+  background-color: #ffffff; /* Белый фон */
+}
+
 .App {
-  text-align: center;
+  display: flex;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.sidebar {
+  width: 220px;
+  background-color: #4a90e2; /* Умеренно яркий синий цвет боковой панели */
+  padding: 40px; /* Увеличенные отступы */
+  border-right: 1px solid #ccc;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.logo {
+  font-size: 24px; /* Размер шрифта для логотипа */
+  font-weight: bold; /* Жирный шрифт */
+  color: white; /* Цвет текста логотипа */
+  margin-bottom: 20px; /* Отступ снизу */
+}
+
+.sidebar ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.sidebar ul li {
+  margin: 20px 0; /* Увеличенные отступы между пунктами меню */
+}
+
+.sidebar ul li a {
+  text-decoration: none;
+  color: #fff; /* Цвет текста в боковой панели */
+}
+
+.main-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+  padding: 20px;
+  color: #333;
+  text-align: left;
+}
+
+.header-nav {
+  margin: 10px 0;
+}
+
+.header-nav a {
+  color: #333; /* Тёмный цвет текста */
+  margin: 0 15px;
+  text-decoration: none;
+}
+
+.header-nav a.button {
+  background-color: transparent; /* Полая кнопка */
+  border: 2px solid #007bff; /* Цвет границы */
+  padding: 8px 15px;
+  border-radius: 5px;
+  color: #007bff; /* Синий цвет текста кнопки */
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.header-nav a.button:hover {
+  background-color: #007bff; /* Цвет при наведении */
+  color: white; /* Цвет текста при наведении */
+}
+
+.main-content {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+  flex-direction: column; /* Вертикальное расположение элементов */
+  align-items: flex-start; /* Выравнивание по левому краю */
+  margin: 20px; /* Уменьшенные отступы сверху */
+  padding: 10px; /* Внутренние отступы */
+}
+
+.text-image-container {
+  display: flex; /* Горизонтальное расположение текста и изображения */
+  align-items: flex-start; /* Выравнивание по верхнему краю */
+}
+
+.text-container {
+  margin-right: 20px; /* Отступ справа от текстового блока */
+}
+
+.main-image {
+  width: 400px; /* Ограничение ширины изображения */
+  height: auto;
+  border-radius: 10px; /* Закругленные углы */
+}
+
+.book-tour-button {
+  margin-top: 15px;
+  padding: 10px 20px;
+  background-color: transparent; /* Полая кнопка */
+  border: 2px solid #007bff; /* Цвет границы */
+  border-radius: 5px;
+  color: #007bff; /* Синий цвет текста */
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.book-tour-button:hover {
+  background-color: #007bff; /* Цвет при наведении */
+  color: white; /* Цвет текста при наведении */
+}
+
+.tour-cards {
+  margin-top: 30px; /* Отступ сверху */
+}
+
+.card-container {
+  display: flex;
+  justify-content: flex-start; /* Выравнивание карточек по левому краю */
+  gap: 20px; /* Промежуток между карточками */
+}
+
+.card {
+  background-color: #ffffff; /* Белый фон карточек */
+  border: 1px solid #ccc; /* Серый бордер */
+  border-radius: 10px; /* Закругленные углы */
+  padding: 15px;
+  max-width: 300px; /* Максимальная ширина карточек */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Тень */
+}
+
+.card-image {
+  width: 100%; /* Полная ширина изображения */
+  border-radius: 10px; /* Закругленные углы для изображения */
+}
+
+.card-button {
+  margin-top: 10px;
+  padding: 5px 10px;
+  background-color: #007bff; /* Цвет кнопки */
+  border: none;
+  border-radius: 5px;
   color: white;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
-.App-link {
-  color: #61dafb;
+.card-button:hover {
+  background-color: #0056b3; /* Цвет при наведении */
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+footer {
+  text-align: center;
+  margin-top: 20px;
+  color: #555;
 }

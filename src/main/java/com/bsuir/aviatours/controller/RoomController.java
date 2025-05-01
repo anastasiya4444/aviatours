@@ -1,11 +1,13 @@
 package com.bsuir.aviatours.controller;
 
+import com.bsuir.aviatours.dto.RoomDTO;
 import com.bsuir.aviatours.model.Room;
 import com.bsuir.aviatours.service.interfaces.EntityService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/room")
@@ -19,32 +21,35 @@ public class RoomController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<String> add(@RequestBody Room room) {
-        roomEntityService.saveEntity(room);
+    public ResponseEntity<String> add(@RequestBody RoomDTO room) {
+        roomEntityService.saveEntity(room.toEntity());
         return ResponseEntity.ok("Room saved successfully");
     }
 
     @GetMapping("/getAll")
-    public List<Room> getAll() {
-        return roomEntityService.getAllEntities();
+    public List<RoomDTO> getAll() {
+        return roomEntityService.getAllEntities()
+                .stream()
+                .map(RoomDTO::fromEntity)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Room> getById(@PathVariable int id) {
-        Room room = roomEntityService.findEntityById(id);
+    public ResponseEntity<RoomDTO> getById(@PathVariable int id) {
+        RoomDTO room = RoomDTO.fromEntity(roomEntityService.findEntityById(id));
         return ResponseEntity.ok(room);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable int id) {
-        Room room = roomEntityService.findEntityById(id);
-        roomEntityService.deleteEntity(room);
+        RoomDTO room = RoomDTO.fromEntity(roomEntityService.findEntityById(id));
+        roomEntityService.deleteEntity(room.toEntity());
         return ResponseEntity.ok("Room deleted successfully");
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Room> update(@RequestBody Room room) {
-        Room room1 = roomEntityService.updateEntity(room);
+    public ResponseEntity<RoomDTO> update(@RequestBody RoomDTO room) {
+        RoomDTO room1 = RoomDTO.fromEntity(roomEntityService.updateEntity(room.toEntity()));
         return ResponseEntity.ok(room1);
     }
 }

@@ -1,5 +1,6 @@
 package com.bsuir.aviatours.controller;
 
+import com.bsuir.aviatours.dto.RouteDTO;
 import com.bsuir.aviatours.model.Route;
 import com.bsuir.aviatours.model.User;
 import com.bsuir.aviatours.service.interfaces.EntityService;
@@ -7,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/route")
@@ -20,32 +22,35 @@ public class RouteController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<String> add(@RequestBody Route route) {
-        userService.saveEntity(route);
+    public ResponseEntity<String> add(@RequestBody RouteDTO route) {
+        userService.saveEntity(route.toEntity());
         return ResponseEntity.ok("Route saved successfully");
     }
 
     @GetMapping("/getAll")
-    public List<Route> getAll() {
-        return userService.getAllEntities();
+    public List<RouteDTO> getAll() {
+        return userService.getAllEntities()
+                .stream()
+                .map(RouteDTO::fromEntity)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Route> getById(@PathVariable int id) {
-        Route route = userService.findEntityById(id);
+    public ResponseEntity<RouteDTO> getById(@PathVariable int id) {
+        RouteDTO route = RouteDTO.fromEntity(userService.findEntityById(id));
         return ResponseEntity.ok(route);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable int id) {
-        Route route = userService.findEntityById(id);
-        userService.deleteEntity(route);
+        RouteDTO route = RouteDTO.fromEntity(userService.findEntityById(id));
+        userService.deleteEntity(route.toEntity());
         return ResponseEntity.ok("Route deleted successfully");
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Route> update(@RequestBody Route route1) {
-        Route route = userService.updateEntity(route1);
+    public ResponseEntity<RouteDTO> update(@RequestBody RouteDTO route1) {
+        RouteDTO route = RouteDTO.fromEntity(userService.updateEntity(route1.toEntity()));
         return ResponseEntity.ok(route);
     }
 }

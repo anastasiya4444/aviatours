@@ -1,11 +1,13 @@
 package com.bsuir.aviatours.controller;
 
+import com.bsuir.aviatours.dto.AirTicketDTO;
 import com.bsuir.aviatours.model.AirTicket;
 import com.bsuir.aviatours.service.interfaces.EntityService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/air_ticket")
@@ -25,26 +27,29 @@ public class AirTicketController {
     }
 
     @GetMapping("/getAll")
-    public List<AirTicket> getAll() {
-        return airTicketEntityService.getAllEntities();
+    public List<AirTicketDTO> getAll() {
+        return airTicketEntityService.getAllEntities()
+                .stream()
+                .map(AirTicketDTO::fromEntity)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AirTicket> getById(@PathVariable int id) {
-        AirTicket user = airTicketEntityService.findEntityById(id);
+    public ResponseEntity<AirTicketDTO> getById(@PathVariable int id) {
+        AirTicketDTO user = AirTicketDTO.fromEntity(airTicketEntityService.findEntityById(id));
         return ResponseEntity.ok(user);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable int id) {
-        AirTicket airTicket = airTicketEntityService.findEntityById(id);
-        airTicketEntityService.deleteEntity(airTicket);
+        AirTicketDTO airTicket = AirTicketDTO.fromEntity(airTicketEntityService.findEntityById(id));
+        airTicketEntityService.deleteEntity(airTicket.toEntity());
         return ResponseEntity.ok("AirTicket deleted successfully");
     }
 
     @PutMapping("/update")
-    public ResponseEntity<AirTicket> update(@RequestBody AirTicket airTicket1) {
-        AirTicket airTicket = airTicketEntityService.updateEntity(airTicket1);
+    public ResponseEntity<AirTicketDTO> update(@RequestBody AirTicketDTO airTicket1) {
+        AirTicketDTO airTicket = AirTicketDTO.fromEntity(airTicketEntityService.updateEntity(airTicket1.toEntity()));
         return ResponseEntity.ok(airTicket);
     }
 }

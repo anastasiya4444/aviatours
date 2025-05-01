@@ -1,11 +1,13 @@
 package com.bsuir.aviatours.controller;
 
+import com.bsuir.aviatours.dto.PaymentDTO;
 import com.bsuir.aviatours.model.Payment;
 import com.bsuir.aviatours.service.interfaces.EntityService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/payment")
@@ -19,32 +21,35 @@ public class PaymentController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<String> add(@RequestBody Payment payment) {
-        paymentEntityService.saveEntity(payment);
+    public ResponseEntity<String> add(@RequestBody PaymentDTO payment) {
+        paymentEntityService.saveEntity(payment.toEntity());
         return ResponseEntity.ok("Payment saved successfully");
     }
 
     @GetMapping("/getAll")
-    public List<Payment> getAll() {
-        return paymentEntityService.getAllEntities();
+    public List<PaymentDTO> getAll() {
+        return paymentEntityService.getAllEntities()
+                .stream()
+                .map(PaymentDTO::fromEntity)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Payment> getById(@PathVariable int id) {
-        Payment payment = paymentEntityService.findEntityById(id);
+    public ResponseEntity<PaymentDTO> getById(@PathVariable int id) {
+        PaymentDTO payment = PaymentDTO.fromEntity(paymentEntityService.findEntityById(id));
         return ResponseEntity.ok(payment);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable int id) {
-        Payment payment = paymentEntityService.findEntityById(id);
-        paymentEntityService.deleteEntity(payment);
+        PaymentDTO payment = PaymentDTO.fromEntity(paymentEntityService.findEntityById(id));
+        paymentEntityService.deleteEntity(payment.toEntity());
         return ResponseEntity.ok("Payment deleted successfully");
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Payment> update(@RequestBody Payment payment) {
-        Payment payment1 = paymentEntityService.updateEntity(payment);
+    public ResponseEntity<PaymentDTO> update(@RequestBody PaymentDTO payment) {
+        PaymentDTO payment1 = PaymentDTO.fromEntity(paymentEntityService.updateEntity(payment.toEntity()));
         return ResponseEntity.ok(payment1);
     }
 }

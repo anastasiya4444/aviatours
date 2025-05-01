@@ -1,11 +1,13 @@
 package com.bsuir.aviatours.controller;
 
+import com.bsuir.aviatours.dto.TourDTO;
 import com.bsuir.aviatours.model.Tour;
 import com.bsuir.aviatours.service.interfaces.EntityService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/tour")
@@ -19,32 +21,35 @@ public class TourController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<String> add(@RequestBody Tour tour) {
-        tourEntityService.saveEntity(tour);
+    public ResponseEntity<String> add(@RequestBody TourDTO tour) {
+        tourEntityService.saveEntity(tour.toEntity());
         return ResponseEntity.ok("Tour saved successfully");
     }
 
     @GetMapping("/getAll")
-    public List<Tour> getAll() {
-        return tourEntityService.getAllEntities();
+    public List<TourDTO> getAll() {
+        return tourEntityService.getAllEntities()
+                .stream()
+                .map(TourDTO::fromEntity)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Tour> getById(@PathVariable int id) {
-        Tour tour = tourEntityService.findEntityById(id);
+    public ResponseEntity<TourDTO> getById(@PathVariable int id) {
+        TourDTO tour = TourDTO.fromEntity(tourEntityService.findEntityById(id));
         return ResponseEntity.ok(tour);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable int id) {
-        Tour tour = tourEntityService.findEntityById(id);
-        tourEntityService.deleteEntity(tour);
+        TourDTO tour = TourDTO.fromEntity(tourEntityService.findEntityById(id));
+        tourEntityService.deleteEntity(tour.toEntity());
         return ResponseEntity.ok("Tour deleted successfully");
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Tour> update(@RequestBody Tour tour1) {
-        Tour tour = tourEntityService.updateEntity(tour1);
+    public ResponseEntity<TourDTO> update(@RequestBody TourDTO tour1) {
+        TourDTO tour = TourDTO.fromEntity(tourEntityService.updateEntity(tour1.toEntity()));
         return ResponseEntity.ok(tour);
     }
 }

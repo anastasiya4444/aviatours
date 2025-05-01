@@ -1,11 +1,13 @@
 package com.bsuir.aviatours.controller;
 
+import com.bsuir.aviatours.dto.HotelDTO;
 import com.bsuir.aviatours.model.Hotel;
 import com.bsuir.aviatours.service.interfaces.EntityService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/hotel")
@@ -19,32 +21,35 @@ public class HotelController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<String> add(@RequestBody Hotel hotel) {
-        hotelEntityService.saveEntity(hotel);
+    public ResponseEntity<String> add(@RequestBody HotelDTO hotel) {
+        hotelEntityService.saveEntity(hotel.toEntity());
         return ResponseEntity.ok("Hotel saved successfully");
     }
 
     @GetMapping("/getAll")
-    public List<Hotel> getAll() {
-        return hotelEntityService.getAllEntities();
+    public List<HotelDTO> getAll() {
+        return hotelEntityService.getAllEntities()
+                .stream()
+                .map(HotelDTO::fromEntity)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Hotel> getById(@PathVariable int id) {
-        Hotel hotel = hotelEntityService.findEntityById(id);
+    public ResponseEntity<HotelDTO> getById(@PathVariable int id) {
+        HotelDTO hotel = HotelDTO.fromEntity(hotelEntityService.findEntityById(id));
         return ResponseEntity.ok(hotel);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable int id) {
-        Hotel hotel = hotelEntityService.findEntityById(id);
-        hotelEntityService.deleteEntity(hotel);
+        HotelDTO hotel = HotelDTO.fromEntity(hotelEntityService.findEntityById(id));
+        hotelEntityService.deleteEntity(hotel.toEntity());
         return ResponseEntity.ok("Hotel deleted successfully");
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Hotel> update(@RequestBody Hotel hotel) {
-        Hotel updatedUser = hotelEntityService.updateEntity(hotel);
+    public ResponseEntity<HotelDTO> update(@RequestBody HotelDTO hotel) {
+        HotelDTO updatedUser = HotelDTO.fromEntity(hotelEntityService.updateEntity(hotel.toEntity()));
         return ResponseEntity.ok(updatedUser);
     }
 }

@@ -1,0 +1,59 @@
+.App {
+    display: flex;
+  }
+  
+  .main-container {
+    flex: 1;
+    padding: 20px;
+  }
+  
+  .App-header {
+    background-color: #282c34;
+    padding: 20px;
+    color: white;
+    text-align: center;
+  }
+  
+  .sidebar {
+    width: 200px;
+    background-color: #f4f4f4;
+    padding: 20px;
+    border-right: 1px solid #ccc;
+  }
+  
+  .sidebar h2 {
+    margin: 0;
+  }
+  
+  .sidebar ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .sidebar ul li {
+    margin: 10px 0;
+  }
+  
+  .sidebar ul li a {
+    text-decoration: none;
+    color: #333;
+  }
+  
+  .sidebar ul li a:hover {
+    color: #007bff;
+  }
+  
+  .main-content {
+    margin: 20px 0;
+  }
+  
+  .main-image {
+    width: 100%;
+    height: auto;
+    margin: 20px 0;
+  }
+  
+  footer {
+    text-align: center;
+    margin-top: 20px;
+  }
