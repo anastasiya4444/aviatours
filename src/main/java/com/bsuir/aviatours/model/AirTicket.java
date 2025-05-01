@@ -1,9 +1,11 @@
 package com.bsuir.aviatours.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 
 @Entity
@@ -38,6 +40,18 @@ public class AirTicket {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "route_id", nullable = false)
     private Route route;
+
+    @ColumnDefault("0.00")
+    @Column(name = "cost", nullable = false, precision = 10, scale = 2)
+    private BigDecimal cost;
+
+    public BigDecimal getCost() {
+        return cost;
+    }
+
+    public void setCost(BigDecimal cost) {
+        this.cost = cost;
+    }
 
     public Integer getId() {
         return id;

@@ -3,7 +3,10 @@ package com.bsuir.aviatours.dto;
 import com.bsuir.aviatours.model.AirTicket;
 import com.bsuir.aviatours.model.PersonalDatum;
 import com.bsuir.aviatours.model.Route;
+import jakarta.persistence.Column;
+import org.hibernate.annotations.ColumnDefault;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 
 public class AirTicketDTO {
@@ -15,11 +18,12 @@ public class AirTicketDTO {
     private Instant arrivalTime;
     private PersonalDatumDTO passenger;
     private RouteDTO route;
+    private BigDecimal cost;
 
     public AirTicketDTO() {}
 
     public AirTicketDTO(Integer id, RouteDTO route, PersonalDatumDTO passenger, Instant arrivalTime, Instant departureTime,
-                        String arrivalAirportCode, String departureAirportCode, String flightNumber) {
+                        String arrivalAirportCode, String departureAirportCode, String flightNumber, BigDecimal cost) {
         this.id = id;
         this.route = route;
         this.passenger = passenger;
@@ -28,6 +32,7 @@ public class AirTicketDTO {
         this.arrivalAirportCode = arrivalAirportCode;
         this.departureAirportCode = departureAirportCode;
         this.flightNumber = flightNumber;
+        this.cost = cost;
     }
 
     public AirTicket toEntity(){
@@ -44,6 +49,7 @@ public class AirTicketDTO {
             airTicket.setRoute(route.toEntity());
         }
         airTicket.setFlightNumber(flightNumber);
+        airTicket.setCost(cost);
         return airTicket;
     }
 
@@ -62,8 +68,17 @@ public class AirTicketDTO {
                 airTicketDTO.setRoute(RouteDTO.fromEntity(airTicket.getRoute()));
             }
             airTicketDTO.setFlightNumber(airTicket.getFlightNumber());
+            airTicketDTO.setCost(airTicket.getCost());
         }
         return airTicketDTO;
+    }
+
+    public BigDecimal getCost() {
+        return cost;
+    }
+
+    public void setCost(BigDecimal cost) {
+        this.cost = cost;
     }
 
     public Integer getId() {

@@ -35,6 +35,18 @@ public class Hotel {
     @Column(name = "created_at")
     private Instant createdAt;
 
+    @Lob
+    @Column(name = "image_urls")
+    private String imageUrls;
+
+    public String getImageUrls() {
+        return imageUrls;
+    }
+
+    public void setImageUrls(String imageUrls) {
+        this.imageUrls = imageUrls;
+    }
+
     public Integer getId() {
         return id;
     }

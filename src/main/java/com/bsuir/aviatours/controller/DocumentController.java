@@ -1,6 +1,5 @@
 package com.bsuir.aviatours.controller;
 
-import com.bsuir.aviatours.model.Document;
 import com.bsuir.aviatours.service.interfaces.EntityService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

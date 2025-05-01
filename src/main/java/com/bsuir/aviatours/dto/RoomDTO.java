@@ -22,12 +22,13 @@ public class RoomDTO {
     private Integer availableRooms;
     private Integer bookingCount;
     private Instant createdAt;
+    private String imageUrls;
 
     public RoomDTO() {}
 
     public RoomDTO(Integer id, HotelDTO hotel, String view, Integer beds, Integer maxGuests, BigDecimal sizeM2,
                    String type, Boolean bath, Boolean terrace, BigDecimal cost, Integer availableRooms,
-                   Integer bookingCount, Instant createdAt) {
+                   Integer bookingCount, Instant createdAt, String imageUrls) {
         this.id = id;
         this.hotel = hotel;
         this.view = view;
@@ -41,6 +42,7 @@ public class RoomDTO {
         this.availableRooms = availableRooms;
         this.bookingCount = bookingCount;
         this.createdAt = createdAt;
+        this.imageUrls = imageUrls;
     }
 
     public Room toEntity(){
@@ -49,6 +51,7 @@ public class RoomDTO {
         if(hotel.getId() != null){
             room.setHotel(this.hotel.toEntity());
         }
+        room.setImageUrls(this.imageUrls);
         room.setView(this.view);
         room.setBeds(this.beds);
         room.setMaxGuests(this.maxGuests);
@@ -81,8 +84,17 @@ public class RoomDTO {
             roomDTO.setAvailableRooms(room.getAvailableRooms());
             roomDTO.setBookingCount(room.getBookingCount());
             roomDTO.setCreatedAt(room.getCreatedAt());
+            roomDTO.setImageUrls(room.getImageUrls());
         }
         return roomDTO;
+    }
+
+    public String getImageUrls() {
+        return imageUrls;
+    }
+
+    public void setImageUrls(String imageUrls) {
+        this.imageUrls = imageUrls;
     }
 
     public Integer getId() {

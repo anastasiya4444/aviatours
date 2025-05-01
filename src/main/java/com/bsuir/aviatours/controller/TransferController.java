@@ -1,7 +1,5 @@
 package com.bsuir.aviatours.controller;
 
-import com.bsuir.aviatours.dto.TransferDTO;
-import com.bsuir.aviatours.model.Transfer;
 import com.bsuir.aviatours.service.interfaces.EntityService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -15,10 +15,11 @@ public class HotelDTO {
     private BigDecimal rating;
     private String hotelFeatures;
     private Instant createdAt;
+    private String imageUrls;
 
     public HotelDTO() {}
 
-    public HotelDTO(Integer id, String description, String address, String mealType, BigDecimal rating, String hotelFeatures, Instant createdAt) {
+    public HotelDTO(Integer id, String description, String address, String mealType, BigDecimal rating, String hotelFeatures, Instant createdAt, String imageUrls) {
         this.id = id;
         this.description = description;
         this.address = address;
@@ -26,6 +27,7 @@ public class HotelDTO {
         this.rating = rating;
         this.hotelFeatures = hotelFeatures;
         this.createdAt = createdAt;
+        this.imageUrls = imageUrls;
     }
 
     public Hotel toEntity(){
@@ -37,6 +39,7 @@ public class HotelDTO {
         hotel.setRating(rating);
         hotel.setHotelFeatures(hotelFeatures);
         hotel.setCreatedAt(createdAt);
+        hotel.setImageUrls(imageUrls);
         return hotel;
     }
 
@@ -50,8 +53,17 @@ public class HotelDTO {
             hotelDTO.setRating(hotel.getRating());
             hotelDTO.setHotelFeatures(hotel.getHotelFeatures());
             hotelDTO.setCreatedAt(hotel.getCreatedAt());
+            hotelDTO.setImageUrls(hotel.getImageUrls());
         }
         return hotelDTO;
+    }
+
+    public String getImageUrls() {
+        return imageUrls;
+    }
+
+    public void setImageUrls(String imageUrls) {
+        this.imageUrls = imageUrls;
     }
 
     public Integer getId() {

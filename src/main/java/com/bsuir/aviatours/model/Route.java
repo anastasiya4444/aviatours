@@ -1,6 +1,8 @@
 package com.bsuir.aviatours.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.Instant;
 
@@ -23,6 +25,19 @@ public class Route {
 
     @Column(name = "arrival_date", nullable = false)
     private Instant arrivalDate;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "tour_id")
+    private Tour tour;
+
+    public Tour getTour() {
+        return tour;
+    }
+
+    public void setTour(Tour tour) {
+        this.tour = tour;
+    }
 
     public Integer getId() {
         return id;

@@ -3,6 +3,7 @@ package com.bsuir.aviatours.model;
 import jakarta.persistence.*;
 import org.hibernate.annotations.ColumnDefault;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 
 @Entity
@@ -23,6 +24,30 @@ public class AdditionalService {
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "created_at")
     private Instant createdAt;
+
+    @ColumnDefault("0.00")
+    @Column(name = "cost", nullable = false, precision = 10, scale = 2)
+    private BigDecimal cost;
+
+    @Lob
+    @Column(name = "image_url")
+    private String imageUrl;
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public BigDecimal getCost() {
+        return cost;
+    }
+
+    public void setCost(BigDecimal cost) {
+        this.cost = cost;
+    }
 
     public Integer getId() {
         return id;

@@ -2,7 +2,11 @@ package com.bsuir.aviatours.dto;
 
 import com.bsuir.aviatours.model.Activity;
 import com.bsuir.aviatours.model.Day;
+import jakarta.persistence.Column;
+import jakarta.persistence.Lob;
+import org.hibernate.annotations.ColumnDefault;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 
 public class ActivityDTO {
@@ -15,11 +19,13 @@ public class ActivityDTO {
     private Integer initialCapacity;
     private Integer booked;
     private Instant createdAt;
+    private BigDecimal cost;
+    private String imageUrls;
 
     public ActivityDTO() {}
 
     public ActivityDTO(Integer id, Day day, String activityType, Instant startDateTime, Instant endDateTime,
-                       String description, Integer initialCapacity, Integer booked, Instant createdAt) {
+                       String description, Integer initialCapacity, Integer booked, Instant createdAt, BigDecimal cost, String imageUrls) {
         this.id = id;
         this.day = day;
         this.activityType = activityType;
@@ -29,6 +35,8 @@ public class ActivityDTO {
         this.initialCapacity = initialCapacity;
         this.booked = booked;
         this.createdAt = createdAt;
+        this.cost = cost;
+        this.imageUrls = imageUrls;
     }
 
     public Activity toEntity(){
@@ -42,6 +50,8 @@ public class ActivityDTO {
         activity.setInitialCapacity(this.initialCapacity);
         activity.setBooked(this.booked);
         activity.setCreatedAt(this.createdAt);
+        activity.setCost(this.cost);
+        activity.setImageUrls(this.imageUrls);
         return activity;
     }
 
@@ -59,8 +69,26 @@ public class ActivityDTO {
             activityDTO.setInitialCapacity(activity.getInitialCapacity());
             activityDTO.setBooked(activity.getBooked());
             activityDTO.setCreatedAt(activity.getCreatedAt());
+            activityDTO.setCost(activity.getCost());
+            activityDTO.setImageUrls(activity.getImageUrls());
         }
         return activityDTO;
+    }
+
+    public String getImageUrls() {
+        return imageUrls;
+    }
+
+    public void setImageUrls(String imageUrls) {
+        this.imageUrls = imageUrls;
+    }
+
+    public BigDecimal getCost() {
+        return cost;
+    }
+
+    public void setCost(BigDecimal cost) {
+        this.cost = cost;
     }
 
     public Integer getId() {

@@ -1,7 +1,5 @@
 package com.bsuir.aviatours.service.implementations;
 
-import com.bsuir.aviatours.model.ClientVisa;
-import com.bsuir.aviatours.model.Role;
 import com.bsuir.aviatours.repository.ClientVisaRepository;
 import com.bsuir.aviatours.service.interfaces.EntityService;
 import jakarta.persistence.EntityNotFoundException;
