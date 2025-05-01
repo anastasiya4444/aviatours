@@ -6,6 +6,7 @@ import com.bsuir.aviatours.service.interfaces.EntityService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,35 +22,91 @@ public class AirTicketController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<String> add(@RequestBody AirTicket airTicket) {
-        airTicketEntityService.saveEntity(airTicket);
-        return ResponseEntity.ok("AirTicket saved successfully");
+    public ResponseEntity<AirTicketDTO> add(@RequestBody AirTicketDTO airTicketDTO) {
+        AirTicket savedTicket = airTicketEntityService.saveEntity(airTicketDTO.toEntity());
+        return ResponseEntity.ok(AirTicketDTO.fromEntity(savedTicket));
     }
 
     @GetMapping("/getAll")
-    public List<AirTicketDTO> getAll() {
-        return airTicketEntityService.getAllEntities()
-                .stream()
+    public ResponseEntity<List<AirTicketDTO>> getAll() {
+        List<AirTicketDTO> tickets = airTicketEntityService.getAllEntities().stream()
                 .map(AirTicketDTO::fromEntity)
                 .collect(Collectors.toList());
+        return ResponseEntity.ok(tickets);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<AirTicketDTO> getById(@PathVariable int id) {
-        AirTicketDTO user = AirTicketDTO.fromEntity(airTicketEntityService.findEntityById(id));
-        return ResponseEntity.ok(user);
+        AirTicket ticket = airTicketEntityService.findEntityById(id);
+        return ResponseEntity.ok(AirTicketDTO.fromEntity(ticket));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(@PathVariable int id) {
-        AirTicketDTO airTicket = AirTicketDTO.fromEntity(airTicketEntityService.findEntityById(id));
-        airTicketEntityService.deleteEntity(airTicket.toEntity());
-        return ResponseEntity.ok("AirTicket deleted successfully");
+    public ResponseEntity<Void> delete(@PathVariable int id) {
+        airTicketEntityService.deleteEntity(airTicketEntityService.findEntityById(id));
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/update")
-    public ResponseEntity<AirTicketDTO> update(@RequestBody AirTicketDTO airTicket1) {
-        AirTicketDTO airTicket = AirTicketDTO.fromEntity(airTicketEntityService.updateEntity(airTicket1.toEntity()));
-        return ResponseEntity.ok(airTicket);
+    public ResponseEntity<AirTicketDTO> update(@RequestBody AirTicketDTO airTicketDTO) {
+        AirTicket updatedTicket = airTicketEntityService.updateEntity(airTicketDTO.toEntity());
+        return ResponseEntity.ok(AirTicketDTO.fromEntity(updatedTicket));
+    }
+
+    @PostMapping("/batch_create")
+    public ResponseEntity<List<AirTicketDTO>> batchCreate(@RequestBody BatchCreateRequest request) {
+        List<AirTicket> newTickets = new ArrayList<>();
+        AirTicket prototype = request.getPrototype().toEntity();
+
+        for (int seat = request.getSeatFrom(); seat <= request.getSeatTo(); seat++) {
+            AirTicket newTicket = new AirTicket();
+            newTicket.setFlightNumber(prototype.getFlightNumber());
+            newTicket.setDepartureAirportCode(prototype.getDepartureAirportCode());
+            newTicket.setArrivalAirportCode(prototype.getArrivalAirportCode());
+            newTicket.setDepartureTime(prototype.getDepartureTime());
+            newTicket.setArrivalTime(prototype.getArrivalTime());
+            newTicket.setCost(prototype.getCost());
+            newTicket.setStatus(prototype.getStatus());
+            newTicket.setSeatNumber(seat);
+
+            newTickets.add(airTicketEntityService.saveEntity(newTicket));
+        }
+
+        List<AirTicketDTO> result = newTickets.stream()
+                .map(AirTicketDTO::fromEntity)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(result);
+    }
+
+    static class BatchCreateRequest {
+        private int seatFrom;
+        private int seatTo;
+        private AirTicketDTO prototype;
+
+        public int getSeatFrom() {
+            return seatFrom;
+        }
+
+        public void setSeatFrom(int seatFrom) {
+            this.seatFrom = seatFrom;
+        }
+
+        public int getSeatTo() {
+            return seatTo;
+        }
+
+        public void setSeatTo(int seatTo) {
+            this.seatTo = seatTo;
+        }
+
+        public AirTicketDTO getPrototype() {
+            return prototype;
+        }
+
+        public void setPrototype(AirTicketDTO prototype) {
+            this.prototype = prototype;
+        }
     }
 }
+

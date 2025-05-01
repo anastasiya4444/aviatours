@@ -38,12 +38,34 @@ public class AirTicket {
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "route_id", nullable = false)
+    @JoinColumn(name = "route_id")
     private Route route;
 
     @ColumnDefault("0.00")
     @Column(name = "cost", nullable = false, precision = 10, scale = 2)
     private BigDecimal cost;
+
+    @Column(name = "seat_number")
+    private Integer seatNumber;
+
+    @Column(name = "status", length = 45)
+    private String status;
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public Integer getSeatNumber() {
+        return seatNumber;
+    }
+
+    public void setSeatNumber(Integer seatNumber) {
+        this.seatNumber = seatNumber;
+    }
 
     public BigDecimal getCost() {
         return cost;

@@ -61,6 +61,8 @@ public class UserController {
     public ResponseEntity<String> add(@RequestBody UserDTO userDTO) {
         User newUser = userDTO.toEntity();
         newUser.setPassword(bCryptPasswordEncoder.encode(userDTO.getPassword()));
+        Role role = roleServiceImpl.findEntityById(userDTO.getRole().getId());
+        newUser.setRole(role);
         entityService.saveEntity(newUser);
         return ResponseEntity.ok("User saved successfully");
     }
@@ -138,7 +140,7 @@ public class UserController {
             existingUser.setPassword(bCryptPasswordEncoder.encode(userDTO.getPassword()));
         }
 
-        existingUser.setRole(roleServiceImpl.findByName(userDTO.getRole().getName()));
+        existingUser.setRole(roleServiceImpl.findEntityById(userDTO.getRole().getId()));
 
         User updatedUser = entityService.updateEntity(existingUser);
         return ResponseEntity.ok(UserDTO.fromEntity(updatedUser));
@@ -204,7 +206,7 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<UserDTO> register(@RequestBody UserDTO userDTO) {
         User user = userDTO.toEntity();
-        Role defaultRole = roleServiceImpl.findEntityById(2); // Обычно 2 - это роль USER
+        Role defaultRole = roleServiceImpl.findEntityById(2);
         user.setRole(defaultRole);
         user.setPassword(bCryptPasswordEncoder.encode(userDTO.getPassword()));
 

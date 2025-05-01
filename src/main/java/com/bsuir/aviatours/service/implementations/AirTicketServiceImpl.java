@@ -33,6 +33,7 @@ public class AirTicketServiceImpl implements EntityService<AirTicket> {
         if (!entityRepository.existsById(obj.getId())) {
             throw new EntityNotFoundException("AirTicket with ID " + obj.getId() + " not found");
         }
+        System.out.println(obj.getSeatNumber());
         return entityRepository.save(obj);
     }
 
