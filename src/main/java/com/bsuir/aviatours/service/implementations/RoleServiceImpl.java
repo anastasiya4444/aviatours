@@ -46,4 +46,7 @@ public class RoleServiceImpl implements EntityService<Role> {
                 .orElseThrow(() -> new EntityNotFoundException("Role with ID " + id + " not found"));
     }
 
+    public Role findByName(String name) {
+        return entityRepository.findByName(name);
+    }
 }

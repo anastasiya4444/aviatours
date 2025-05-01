@@ -4,12 +4,11 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import java.io.Serializable;
 import java.time.Instant;
 
 @Entity
 @Table(name = "transfer")
-public class Transfer implements Serializable {
+public class Transfer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "transfer_id", nullable = false)
@@ -24,7 +23,7 @@ public class Transfer implements Serializable {
     @Column(name = "transfer_date", nullable = false)
     private Instant transferDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_id")
     private User user;
@@ -32,10 +31,6 @@ public class Transfer implements Serializable {
     @Lob
     @Column(name = "description")
     private String description;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "payment_id")
-    private Payment payment;
 
     public Integer getId() {
         return id;
@@ -83,14 +78,6 @@ public class Transfer implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public Payment getPayment() {
-        return payment;
-    }
-
-    public void setPayment(Payment payment) {
-        this.payment = payment;
     }
 
 }

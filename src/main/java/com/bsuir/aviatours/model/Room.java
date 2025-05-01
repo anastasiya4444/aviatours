@@ -1,19 +1,20 @@
 package com.bsuir.aviatours.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.ColumnDefault;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.Instant;
 
 @Entity
 @Table(name = "room")
-public class Room implements Serializable {
+public class Room {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "room_id", nullable = false)
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "hotel_id")
     private Hotel hotel;
 
@@ -46,6 +47,10 @@ public class Room implements Serializable {
 
     @Column(name = "booking_count")
     private Integer bookingCount;
+
+    @ColumnDefault("CURRENT_TIMESTAMP")
+    @Column(name = "created_at")
+    private Instant createdAt;
 
     public Integer getId() {
         return id;
@@ -141,6 +146,14 @@ public class Room implements Serializable {
 
     public void setBookingCount(Integer bookingCount) {
         this.bookingCount = bookingCount;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
     }
 
 }

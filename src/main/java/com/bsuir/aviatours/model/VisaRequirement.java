@@ -2,12 +2,11 @@ package com.bsuir.aviatours.model;
 
 import jakarta.persistence.*;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Entity
 @Table(name = "visa_requirement")
-public class VisaRequirement implements Serializable {
+public class VisaRequirement {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "requirement_id", nullable = false)

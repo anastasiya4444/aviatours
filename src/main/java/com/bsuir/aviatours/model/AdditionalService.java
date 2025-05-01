@@ -1,12 +1,13 @@
 package com.bsuir.aviatours.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.ColumnDefault;
 
-import java.io.Serializable;
+import java.time.Instant;
 
 @Entity
 @Table(name = "additional_service")
-public class AdditionalService implements Serializable {
+public class AdditionalService {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "service_id", nullable = false)
@@ -19,9 +20,9 @@ public class AdditionalService implements Serializable {
     @Column(name = "description")
     private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "payment_id")
-    private Payment payment;
+    @ColumnDefault("CURRENT_TIMESTAMP")
+    @Column(name = "created_at")
+    private Instant createdAt;
 
     public Integer getId() {
         return id;
@@ -47,12 +48,12 @@ public class AdditionalService implements Serializable {
         this.description = description;
     }
 
-    public Payment getPayment() {
-        return payment;
+    public Instant getCreatedAt() {
+        return createdAt;
     }
 
-    public void setPayment(Payment payment) {
-        this.payment = payment;
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
     }
 
 }

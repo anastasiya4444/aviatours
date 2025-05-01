@@ -1,17 +1,21 @@
 package com.bsuir.aviatours.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.ColumnDefault;
 
-import java.io.Serializable;
 import java.time.Instant;
 
 @Entity
 @Table(name = "activity")
-public class Activity implements Serializable {
+public class Activity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "activity_id", nullable = false)
     private Integer id;
+
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "day_id", nullable = false)
+    private Day day;
 
     @Column(name = "activity_type", nullable = false, length = 45)
     private String activityType;
@@ -32,12 +36,9 @@ public class Activity implements Serializable {
     @Column(name = "booked", nullable = false)
     private Integer booked;
 
-    @Column(name = "additional_service_id")
-    private Integer additionalServiceId;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "payment_id")
-    private Payment payment;
+    @ColumnDefault("CURRENT_TIMESTAMP")
+    @Column(name = "created_at")
+    private Instant createdAt;
 
     public Integer getId() {
         return id;
@@ -45,6 +46,14 @@ public class Activity implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Day getDay() {
+        return day;
+    }
+
+    public void setDay(Day day) {
+        this.day = day;
     }
 
     public String getActivityType() {
@@ -95,20 +104,12 @@ public class Activity implements Serializable {
         this.booked = booked;
     }
 
-    public Integer getAdditionalServiceId() {
-        return additionalServiceId;
+    public Instant getCreatedAt() {
+        return createdAt;
     }
 
-    public void setAdditionalServiceId(Integer additionalServiceId) {
-        this.additionalServiceId = additionalServiceId;
-    }
-
-    public Payment getPayment() {
-        return payment;
-    }
-
-    public void setPayment(Payment payment) {
-        this.payment = payment;
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
     }
 
 }

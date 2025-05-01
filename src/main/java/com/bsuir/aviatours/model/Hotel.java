@@ -1,13 +1,14 @@
 package com.bsuir.aviatours.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.ColumnDefault;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.Instant;
 
 @Entity
 @Table(name = "hotel")
-public class Hotel implements Serializable {
+public class Hotel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "hotel_id", nullable = false)
@@ -29,6 +30,10 @@ public class Hotel implements Serializable {
     @Lob
     @Column(name = "hotel_features")
     private String hotelFeatures;
+
+    @ColumnDefault("CURRENT_TIMESTAMP")
+    @Column(name = "created_at")
+    private Instant createdAt;
 
     public Integer getId() {
         return id;
@@ -76,6 +81,14 @@ public class Hotel implements Serializable {
 
     public void setHotelFeatures(String hotelFeatures) {
         this.hotelFeatures = hotelFeatures;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
     }
 
 }

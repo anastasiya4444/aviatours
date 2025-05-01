@@ -2,12 +2,11 @@ package com.bsuir.aviatours.model;
 
 import jakarta.persistence.*;
 
-import java.io.Serializable;
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "personal_data")
-public class PersonalDatum implements Serializable {
+public class PersonalDatum {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "personal_data_id", nullable = false)

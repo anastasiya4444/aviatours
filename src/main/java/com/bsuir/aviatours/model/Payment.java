@@ -3,13 +3,12 @@ package com.bsuir.aviatours.model;
 import jakarta.persistence.*;
 import org.hibernate.annotations.ColumnDefault;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Instant;
 
 @Entity
 @Table(name = "payment")
-public class Payment implements Serializable {
+public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "payment_id", nullable = false)

@@ -4,12 +4,11 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import java.io.Serializable;
 import java.time.Instant;
 
 @Entity
 @Table(name = "air_ticket")
-public class AirTicket implements Serializable {
+public class AirTicket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "air_ticket_id", nullable = false)
@@ -30,20 +29,15 @@ public class AirTicket implements Serializable {
     @Column(name = "arrival_time", nullable = false)
     private Instant arrivalTime;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "passenger_id")
     private PersonalDatum passenger;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "route_id")
+    @JoinColumn(name = "route_id", nullable = false)
     private Route route;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "payment_id", nullable = false)
-    private Payment payment;
 
     public Integer getId() {
         return id;
@@ -107,14 +101,6 @@ public class AirTicket implements Serializable {
 
     public void setRoute(Route route) {
         this.route = route;
-    }
-
-    public Payment getPayment() {
-        return payment;
-    }
-
-    public void setPayment(Payment payment) {
-        this.payment = payment;
     }
 
 }

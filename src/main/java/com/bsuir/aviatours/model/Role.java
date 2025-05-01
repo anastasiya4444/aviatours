@@ -2,22 +2,22 @@ package com.bsuir.aviatours.model;
 
 import jakarta.persistence.*;
 
-import java.io.Serializable;
-
 @Entity
 @Table(name = "role")
-public class Role implements Serializable {
+public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "role_id")
-    private int id;
+    @Column(name = "role_id", nullable = false)
+    private Integer id;
+
+    @Column(name = "name", nullable = false, length = 45)
     private String name;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -28,4 +28,5 @@ public class Role implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
+
 }

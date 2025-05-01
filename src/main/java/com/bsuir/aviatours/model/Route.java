@@ -1,15 +1,12 @@
 package com.bsuir.aviatours.model;
 
 import jakarta.persistence.*;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
-import java.io.Serializable;
 import java.time.Instant;
 
 @Entity
 @Table(name = "route")
-public class Route implements Serializable {
+public class Route {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "route_id", nullable = false)
@@ -26,15 +23,6 @@ public class Route implements Serializable {
 
     @Column(name = "arrival_date", nullable = false)
     private Instant arrivalDate;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "payment_id")
-    private Payment payment;
 
     public Integer getId() {
         return id;
@@ -74,22 +62,6 @@ public class Route implements Serializable {
 
     public void setArrivalDate(Instant arrivalDate) {
         this.arrivalDate = arrivalDate;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Payment getPayment() {
-        return payment;
-    }
-
-    public void setPayment(Payment payment) {
-        this.payment = payment;
     }
 
 }
