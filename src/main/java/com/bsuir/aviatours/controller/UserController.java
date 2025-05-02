@@ -203,6 +203,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
+
     @PostMapping("/register")
     public ResponseEntity<UserDTO> register(@RequestBody UserDTO userDTO) {
         User user = userDTO.toEntity();

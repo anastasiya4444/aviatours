@@ -13,7 +13,7 @@ import FlightFilter from './pages/FlightFilter';
 import TourFilter from './pages/TourFilter';
 
 // Страницы работы с контентом
-import ReviewsPage from './pages/ReviewsPage';
+import MyReviews from './pages/MyReviews';
 import RouteBuilder from './pages/RouteBuilder';
 import ActivityBooking from './pages/ActivityBooking';
 
@@ -37,6 +37,7 @@ import TourManagement from './pages/admin/TourManagement';
 import FlightManagement from './pages/admin/FlightManagement';
 import UserManagement from './pages/admin/UserManagement';
 
+
 const App = () => {
     return (
         <Router>
@@ -54,7 +55,7 @@ const App = () => {
                                 {/* Основные функциональные страницы */}
                                 <Route path="/flights" element={<FlightFilter />} />
                                 <Route path="/tours" element={<TourFilter />} />
-                                <Route path="/reviews" element={<ReviewsPage />} />
+                                <Route path="/reviews" element={<MyReviews />} />
                                 <Route path="/route-builder" element={<RouteBuilder />} />
                                 <Route path="/activity-booking" element={<ActivityBooking />} />
                                 

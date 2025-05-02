@@ -47,4 +47,8 @@ public class RoomServiceImpl implements EntityService<Room> {
                 .orElseThrow(() -> new EntityNotFoundException("Room with ID " + id + " not found"));
     }
 
+    public List<Room> findByHotelId(int id) {
+        return entityRepository.findByHotelId(id);
+    }
+
 }

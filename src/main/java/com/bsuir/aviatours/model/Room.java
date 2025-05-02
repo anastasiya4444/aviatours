@@ -14,7 +14,7 @@ public class Room {
     @Column(name = "room_id", nullable = false)
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hotel_id")
     private Hotel hotel;
 

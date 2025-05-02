@@ -47,4 +47,8 @@ public class ReviewServiceImpl implements EntityService<Review> {
                 .orElseThrow(() -> new EntityNotFoundException("Review with ID " + id + " not found"));
     }
 
+    public List<Review> findByUserId(int id) {
+        return entityRepository.findByUserId(id);
+    }
+
 }

@@ -47,4 +47,7 @@ public class UserServiceImpl implements EntityService<User> {
                 .orElseThrow(() -> new EntityNotFoundException("User with ID " + id + " not found"));
     }
 
+    public User findByUsername(String username) {
+        return entityRepository.findByUsername(username);
+    }
 }
