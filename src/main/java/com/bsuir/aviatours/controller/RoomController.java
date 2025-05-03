@@ -6,10 +6,20 @@ import com.bsuir.aviatours.model.Room;
 import com.bsuir.aviatours.service.implementations.HotelServiceImpl;
 import com.bsuir.aviatours.service.implementations.RoomServiceImpl;
 import com.bsuir.aviatours.service.interfaces.EntityService;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
@@ -24,7 +34,56 @@ public class RoomController {
         this.roomEntityService = roomEntityService;
         this.hotelEntityService = hotelEntityService;
     }
+    @Value("${upload.path}")
+    private String uploadPath;
 
+    @PostMapping("/{roomId}/uploadImage")
+    public ResponseEntity<String> uploadImage(
+            @PathVariable int roomId,
+            @RequestParam("file") MultipartFile file) {
+
+        try {
+            Room room = roomEntityService.findEntityById(roomId);
+            if (room == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            // Удаляем старое изображение если есть
+            if (room.getImageUrls() != null) {
+                Files.deleteIfExists(Paths.get(uploadPath, room.getImageUrls()));
+            }
+
+            // Сохраняем новое изображение
+            String filename = UUID.randomUUID() + "_" + file.getOriginalFilename();
+            Path filePath = Paths.get(uploadPath, filename);
+            Files.write(filePath, file.getBytes());
+
+            room.setImageUrls(filename);
+            roomEntityService.updateEntity(room);
+
+            return ResponseEntity.ok(filename);
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body("Failed to upload image");
+        }
+    }
+
+    @GetMapping("/images/{filename:.+}")
+    public ResponseEntity<Resource> getImage(@PathVariable String filename) {
+        try {
+            Path filePath = Paths.get(uploadPath).resolve(filename);
+            Resource resource = new UrlResource(filePath.toUri());
+
+            if (resource.exists() || resource.isReadable()) {
+                return ResponseEntity.ok()
+                        .header(HttpHeaders.CONTENT_TYPE, Files.probeContentType(filePath))
+                        .body(resource);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (IOException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
     @PostMapping("/add")
     public ResponseEntity<String> add(@RequestBody RoomDTO room) {
         Room newRoom = room.toEntity();

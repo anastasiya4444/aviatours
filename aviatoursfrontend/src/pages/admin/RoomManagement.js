@@ -20,6 +20,8 @@ const RoomManagement = ({ hotelId, onBack, hotelData }) => {
     availableRooms: 1,
     bookingCount: 0
   });
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
 
   const roomTypes = ['Standard', 'Deluxe', 'Suite', 'Family', 'Executive'];
 
@@ -31,6 +33,7 @@ const RoomManagement = ({ hotelId, onBack, hotelData }) => {
     try {
       const response = await api.get(`/room/getByHotel/${hotelId}`);
       setRooms(response.data);
+      console.log(response.data)
     } catch (error) {
       console.error('Error fetching rooms:', error);
       alert('Failed to load rooms');
@@ -43,6 +46,38 @@ const RoomManagement = ({ hotelId, onBack, hotelData }) => {
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }));
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setSelectedImage(file);
+      setImagePreview(URL.createObjectURL(file));
+    }
+  };
+
+  const uploadImage = async (roomId) => {
+    if (!selectedImage) return null;
+
+    const formData = new FormData();
+    formData.append('file', selectedImage);
+
+    try {
+      const response = await api.post(
+        `/room/${roomId}/uploadImage`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      alert('Failed to upload image');
+      return null;
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -61,8 +96,14 @@ const RoomManagement = ({ hotelId, onBack, hotelData }) => {
 
       if (editingId) {
         await api.put('/room/update', { ...payload, id: editingId });
+        if (selectedImage) {
+          await uploadImage(editingId);
+        }
       } else {
-        await api.post('/room/add', payload);
+        const response = await api.post('/room/add', payload);
+        if (selectedImage) {
+          await uploadImage(response.data.id);
+        }
       }
       
       fetchRooms();
@@ -87,6 +128,7 @@ const RoomManagement = ({ hotelId, onBack, hotelData }) => {
       bookingCount: room.bookingCount
     });
     setEditingId(room.id);
+    setImagePreview(room.imageUrls ? `http://localhost:8080/room/images/${room.imageUrls}` : null);
   };
 
   const handleDelete = async (id) => {
@@ -115,6 +157,8 @@ const RoomManagement = ({ hotelId, onBack, hotelData }) => {
       bookingCount: 0
     });
     setEditingId(null);
+    setSelectedImage(null);
+    setImagePreview(null);
   };
 
   return (
@@ -122,7 +166,7 @@ const RoomManagement = ({ hotelId, onBack, hotelData }) => {
       <button onClick={onBack} className="btn-back">
         ← Back to Hotels
       </button>
-      
+
       <h2>Managing Rooms for: {hotelData?.description}</h2>
       <p>Address: {hotelData?.address}</p>
 
@@ -249,6 +293,29 @@ const RoomManagement = ({ hotelId, onBack, hotelData }) => {
             </div>
           </div>
 
+          <div>
+            <label>Room Image:</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+            />
+            {imagePreview && (
+              <div style={{ marginTop: '10px' }}>
+                <img
+                  src={imagePreview}
+                  alt="Preview"
+                  style={{
+                    maxWidth: '150px',
+                    maxHeight: '150px',
+                    borderRadius: '4px',
+                    border: '1px solid #ddd',
+                  }}
+                />
+              </div>
+            )}
+          </div>
+
           <div className="form-actions">
             <button type="submit" className="btn-primary">
               {editingId ? 'Update Room' : 'Add Room'}
@@ -267,6 +334,7 @@ const RoomManagement = ({ hotelId, onBack, hotelData }) => {
         <table className="data-table">
           <thead>
             <tr>
+              <th>Image</th>
               <th>Type</th>
               <th>View</th>
               <th>Beds</th>
@@ -280,6 +348,45 @@ const RoomManagement = ({ hotelId, onBack, hotelData }) => {
           <tbody>
             {rooms.map(room => (
               <tr key={room.id}>
+                <td>
+                  {room.imageUrls ? (
+                    <div style={{
+                      width: '80px',
+                      height: '60px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}>
+                      <img
+                        src={`http://localhost:8080/room/images/${room.imageUrls}`} 
+                        alt="Room"
+                        style={{
+                          maxWidth: '100%',
+                          maxHeight: '100%',
+                          objectFit: 'cover',
+                          borderRadius: '4px',
+                          boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                        }}
+                        onError={(e) => {
+                          e.target.src = 'https://via.placeholder.com/80x60?text=No+Image';
+                        }}
+                      />
+                    </div>
+                  ) : (
+                    <div style={{
+                      width: '80px',
+                      height: '60px',
+                      backgroundColor: '#f5f5f5',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      borderRadius: '4px',
+                      color: '#999'
+                    }}>
+                      No Image
+                    </div>
+                  )}
+                </td>
                 <td>{room.type}</td>
                 <td>{room.view}</td>
                 <td>{room.beds}</td>
@@ -288,15 +395,32 @@ const RoomManagement = ({ hotelId, onBack, hotelData }) => {
                 <td>${room.cost.toFixed(2)}</td>
                 <td>{room.availableRooms}</td>
                 <td className="actions">
-                  <button 
+                  <button
                     onClick={() => handleEdit(room)}
                     className="btn-edit"
+                    style={{
+                      padding: '5px 10px',
+                      marginRight: '5px',
+                      backgroundColor: '#4CAF50',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '4px',
+                      cursor: 'pointer'
+                    }}
                   >
                     Edit
                   </button>
-                  <button 
+                  <button
                     onClick={() => handleDelete(room.id)}
                     className="btn-delete"
+                    style={{
+                      padding: '5px 10px',
+                      backgroundColor: '#f44336',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '4px',
+                      cursor: 'pointer'
+                    }}
                   >
                     Delete
                   </button>
