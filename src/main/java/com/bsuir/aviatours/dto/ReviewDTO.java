@@ -27,6 +27,8 @@ public class ReviewDTO {
 
     public Review toEntity(){
         Review review = new Review();
+
+        review.setId(id);
         if(user.getId() != null){
             review.setUser(user.toEntity());
         }
@@ -39,6 +41,7 @@ public class ReviewDTO {
     public static ReviewDTO fromEntity(Review review){
         ReviewDTO reviewDTO = new ReviewDTO();
         if(review.getId() != null){
+            reviewDTO.setId(review.getId());
             if(review.getUser() != null){
                 reviewDTO.setUser(UserDTO.fromEntity(review.getUser()));
             }

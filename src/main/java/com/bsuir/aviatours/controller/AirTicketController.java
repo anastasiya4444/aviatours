@@ -2,10 +2,15 @@ package com.bsuir.aviatours.controller;
 
 import com.bsuir.aviatours.dto.AirTicketDTO;
 import com.bsuir.aviatours.model.AirTicket;
+import com.bsuir.aviatours.service.business.adapter.DateTimeAdapter;
+import com.bsuir.aviatours.service.business.adapter.IsoDateTimeAdapter;
+import com.bsuir.aviatours.service.implementations.AirTicketServiceImpl;
 import com.bsuir.aviatours.service.interfaces.EntityService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,9 +20,9 @@ import java.util.stream.Collectors;
 @CrossOrigin
 public class AirTicketController {
 
-    private final EntityService<AirTicket> airTicketEntityService;
+    private final AirTicketServiceImpl airTicketEntityService;
 
-    public AirTicketController(EntityService<AirTicket> airTicketEntityService) {
+    public AirTicketController(AirTicketServiceImpl airTicketEntityService) {
         this.airTicketEntityService = airTicketEntityService;
     }
 
@@ -78,7 +83,38 @@ public class AirTicketController {
 
         return ResponseEntity.ok(result);
     }
+    @GetMapping("/filter")
+    public ResponseEntity<List<AirTicketDTO>> filterTickets(
+            @RequestParam(required = false) String flightNumber,
+            @RequestParam(required = false) String departureAirportCode,
+            @RequestParam(required = false) String arrivalAirportCode,
+            @RequestParam(required = false) String departureTimeFrom,
+            @RequestParam(required = false) String departureTimeTo,
+            @RequestParam(required = false) BigDecimal minCost,
+            @RequestParam(required = false) BigDecimal maxCost,
+            @RequestParam(required = false) Integer seatNumber,
+            @RequestParam(required = false) String status) {
 
+        DateTimeAdapter dateAdapter = new IsoDateTimeAdapter();
+
+        Instant fromInstant = departureTimeFrom != null
+                ? dateAdapter.fromFrontendFormat(departureTimeFrom)
+                : null;
+        Instant toInstant = departureTimeTo != null
+                ? dateAdapter.fromFrontendFormat(departureTimeTo)
+                : null;
+
+        List<AirTicket> filteredTickets = airTicketEntityService.filterTickets(
+                flightNumber, departureAirportCode, arrivalAirportCode,
+                fromInstant, toInstant, minCost, maxCost,
+                seatNumber, status);
+
+        List<AirTicketDTO> result = filteredTickets.stream()
+                .map(AirTicketDTO::fromEntity)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(result);
+    }
     static class BatchCreateRequest {
         private int seatFrom;
         private int seatTo;

@@ -34,14 +34,18 @@ const MyReviews = () => {
         api.get('/review/my')
       ]);
       
-      setAllReviews(allRes.data.filter(review => review.id !== null)); 
-      setReviews(myRes.data.filter(review => review.id !== null));
+      console.log('All reviews:', allRes.data);
+      console.log('My reviews:', myRes.data);
+      
+      setAllReviews(allRes.data);
+      setReviews(myRes.data);
       
       if (myRes.data.length > 0 && myRes.data[0].user) {
         setCurrentUser(myRes.data[0].user);
+        console.log('Current user:', myRes.data[0].user);
       }
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to load data');
+      setError(err.response?.data?.message || 'Failed to load reviews');
       console.error('Fetch error:', err);
     } finally {
       setIsLoading(false);
@@ -55,66 +59,90 @@ const MyReviews = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!formData.reviewText || formData.reviewText.length < 10) {
+      setError('Review text must be at least 10 characters');
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null);
     try {
       if (formData.id) {
+        console.log('Updating review with ID:', formData.id);
         await api.put(`/review/${formData.id}`, {
           rating: formData.rating,
           reviewText: formData.reviewText
         });
       } else {
+        console.log('Creating new review');
         await api.post('/review', {
           rating: formData.rating,
           reviewText: formData.reviewText
         });
       }
       await fetchData();
-      resetForm();
+      setFormData({
+        id: null,
+        rating: 5,
+        reviewText: ''
+      });
     } catch (err) {
       setError(err.response?.data?.message || 'Operation failed');
       console.error('Submit error:', err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleEdit = (review) => {
-    if (!review.id) return;
+    console.log('Editing review ID:', review.id);
     setFormData({
       id: review.id,
       rating: review.rating,
       reviewText: review.reviewText
     });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleDelete = async (id) => {
-    if (!id || !window.confirm('Are you sure you want to delete this review?')) return;
+  const handleDelete = async (review) => {
+    console.log('Attempting to delete review ID:', review.id);
+    if (!review.id) {
+      setError('Cannot delete review without ID');
+      return;
+    }
+    
+    if (!window.confirm('Are you sure you want to delete this review?')) return;
+    
+    setIsLoading(true);
+    setError(null);
     try {
-      await api.delete(`/review/${id}`);
+      await api.delete(`/review/${review.id}`);
+      console.log('Successfully deleted review ID:', review.id);
       await fetchData();
     } catch (err) {
       setError(err.response?.data?.message || 'Delete failed');
       console.error('Delete error:', err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const resetForm = () => {
-    setFormData({
-      id: null,
-      rating: 5,
-      reviewText: ''
-    });
+  const isCurrentUserAuthor = (review) => {
+    return currentUser && review.user && currentUser.id === review.user.id;
   };
 
-  const canEditReview = (review) => {
-    if (!review.id || !currentUser) return false;
-    return currentUser.id === review.user?.id || currentUser.role?.name === 'ADMIN';
+  const getReviewKey = (review, index) => {
+    return review.id ? `review-${review.id}` : `review-temp-${index}`;
   };
 
-  if (isLoading) return <div>Loading reviews...</div>;
-  if (error) return <div className="error">{error}</div>;
+  if (isLoading) return <div className="loading">Loading reviews...</div>;
 
   return (
     <div className="page-container">
       <h1>Reviews {currentUser && `(Hello, ${currentUser.username})`}</h1>
       
+      {error && <div className="error">{error}</div>}
+
       <div className="form-section">
         <h2>{formData.id ? 'Edit Review' : 'Add New Review'}</h2>
         <form onSubmit={handleSubmit}>
@@ -125,6 +153,7 @@ const MyReviews = () => {
               value={formData.rating}
               onChange={handleInputChange}
               required
+              disabled={isLoading}
             >
               {[1, 2, 3, 4, 5].map(num => (
                 <option key={num} value={num}>{num}</option>
@@ -140,15 +169,21 @@ const MyReviews = () => {
               onChange={handleInputChange}
               required
               minLength="10"
+              disabled={isLoading}
             />
           </div>
 
           <div className="form-actions">
-            <button type="submit" className="btn-primary">
+            <button type="submit" className="btn-primary" disabled={isLoading}>
               {formData.id ? 'Update' : 'Add'}
             </button>
             {formData.id && (
-              <button type="button" onClick={resetForm} className="btn-secondary">
+              <button 
+                type="button" 
+                onClick={() => setFormData({ id: null, rating: 5, reviewText: '' })}
+                className="btn-secondary"
+                disabled={isLoading}
+              >
                 Cancel
               </button>
             )}
@@ -156,50 +191,51 @@ const MyReviews = () => {
         </form>
       </div>
 
-      <div className="table-section">
+      <div className="reviews-section">
         <h2>All Reviews</h2>
         {allReviews.length === 0 ? (
           <p>No reviews yet</p>
         ) : (
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Rating</th>
-                <th>Review</th>
-                <th>Author</th>
-                <th>Date</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {allReviews.map(review => (
-                <tr key={`review-${review.id}`}>
-                  <td>{'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}</td>
-                  <td>{review.reviewText}</td>
-                  <td>{review.user?.username || 'Unknown'}</td>
-                  <td>{review.createdAt ? new Date(review.createdAt).toLocaleDateString() : 'N/A'}</td>
-                  <td className="actions">
-                    {canEditReview(review) && (
-                      <>
-                        <button 
-                          onClick={() => handleEdit(review)}
-                          className="btn-edit"
-                        >
-                          Edit
-                        </button>
-                        <button 
-                          onClick={() => handleDelete(review.id)}
-                          className="btn-delete"
-                        >
-                          Delete
-                        </button>
-                      </>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div className="reviews-list">
+            {allReviews.map((review, index) => (
+              <div key={getReviewKey(review, index)} className="review-card">
+                <div className="review-header">
+                  <span className="review-id" style={{fontWeight: 'bold', marginRight: '10px'}}>
+                    ID: {review.id ? review.id : 'null'}
+                  </span>
+                  <span className="review-rating">
+                    {'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}
+                  </span>
+                  <span className="review-author">
+                    by {review.user?.username || 'Anonymous'}
+                  </span>
+                  <span className="review-date">
+                    {review.createdAt ? new Date(review.createdAt).toLocaleDateString() : ''}
+                  </span>
+                </div>
+                <div className="review-text">{review.reviewText}</div>
+                
+                {isCurrentUserAuthor(review) && (
+                  <div className="review-actions">
+                    <button 
+                      onClick={() => handleEdit(review)}
+                      className="btn-edit"
+                      disabled={isLoading}
+                    >
+                      Edit
+                    </button>
+                    <button 
+                      onClick={() => handleDelete(review)}
+                      className="btn-delete"
+                      disabled={isLoading}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
         )}
       </div>
     </div>

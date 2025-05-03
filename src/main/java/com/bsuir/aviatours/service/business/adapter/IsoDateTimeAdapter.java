@@ -2,18 +2,27 @@ package com.bsuir.aviatours.service.business.adapter;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 public class IsoDateTimeAdapter implements DateTimeAdapter {
     private static final DateTimeFormatter ISO_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
     private static final DateTimeFormatter HTML_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+    private static final DateTimeFormatter SQL_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private static final ZoneId ZONE_ID = ZoneId.systemDefault();
 
     @Override
     public Instant parse(String dateTime) {
         if (dateTime == null) return null;
-        return LocalDateTime.parse(dateTime, ISO_FORMATTER)
-                .atZone(ZONE_ID)
-                .toInstant();
+
+        try {
+            return LocalDateTime.parse(dateTime, ISO_FORMATTER)
+                    .atZone(ZONE_ID)
+                    .toInstant();
+        } catch (DateTimeParseException e) {
+            return LocalDateTime.parse(dateTime, SQL_FORMATTER)
+                    .atZone(ZONE_ID)
+                    .toInstant();
+        }
     }
 
     @Override
