@@ -9,10 +9,12 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.List;
 
 @Repository
 public interface AirTicketRepository extends JpaRepository<AirTicket, Integer>, JpaSpecificationExecutor<AirTicket> {
+    List<AirTicket> findByRouteIsNullAndStatus(String status);
     @Query("SELECT t FROM AirTicket t WHERE " +
             "(:flightNumber IS NULL OR t.flightNumber = :flightNumber) AND " +
             "(:departureAirportCode IS NULL OR t.departureAirportCode = :departureAirportCode) AND " +
@@ -33,4 +35,7 @@ public interface AirTicketRepository extends JpaRepository<AirTicket, Integer>, 
             @Param("maxCost") BigDecimal maxCost,
             @Param("seatNumber") Integer seatNumber,
             @Param("status") String status);
+
+     List<AirTicket> findByRouteIdAndStatus(Integer routeId, String status);
+     List<AirTicket> findByDepartureAirportCodeAndArrivalAirportCodeAndDepartureTime(String departureAirportCode, String arrivalAirportCode, Instant departureTime);
 }

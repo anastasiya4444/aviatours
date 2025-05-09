@@ -122,13 +122,13 @@ const FlightManagement = () => {
 
     return (
         <div className="page-container">
-            <h1>Flight Tickets Management</h1>
+            <h1>Управление авиабилетами</h1>
 
             <div className="form-section">
                 <h2>{editingId ? 'Edit Ticket' : 'Create New Ticket'}</h2>
                 <form onSubmit={handleSubmit}>
                     <div>
-                        <label>Flight Number:</label>
+                        <label>Номер перелёта:</label>
                         <input
                             type="text"
                             name="flightNumber"
@@ -139,7 +139,7 @@ const FlightManagement = () => {
                     </div>
 
                     <div>
-                        <label>Departure Airport:</label>
+                        <label>Код аэропорта отправления:</label>
                         <input
                             type="text"
                             name="departureAirportCode"
@@ -150,7 +150,7 @@ const FlightManagement = () => {
                     </div>
 
                     <div>
-                        <label>Arrival Airport:</label>
+                        <label>Код аэропорта прибытия:</label>
                         <input
                             type="text"
                             name="arrivalAirportCode"
@@ -161,7 +161,7 @@ const FlightManagement = () => {
                     </div>
 
                     <div>
-                        <label>Departure Time:</label>
+                        <label>Время отправления:</label>
                         <input
                             type="datetime-local"
                             name="departureTime"
@@ -172,7 +172,7 @@ const FlightManagement = () => {
                     </div>
 
                     <div>
-                        <label>Arrival Time:</label>
+                        <label>Время прибытия:</label>
                         <input
                             type="datetime-local"
                             name="arrivalTime"
@@ -185,7 +185,7 @@ const FlightManagement = () => {
                     {!editingId && (
                         <>
                             <div>
-                                <label>Seat Range (from - to):</label>
+                                <label>Вариация мест (от - до):</label>
                                 <input
                                     type="number"
                                     name="seatFrom"
@@ -207,27 +207,27 @@ const FlightManagement = () => {
                     )}
 
                     <div>
-                        <label>Cost:</label>
+                        <label>Стоимость:</label>
                         <input
                             type="number"
                             name="cost"
                             value={formData.cost}
                             onChange={handleInputChange}
-                            step="0.01"
+                            step="1"
                             required
                         />
                     </div>
 
                     <div>
-                        <label>Status:</label>
+                        <label>Статус:</label>
                         <select
                             name="status"
                             value={formData.status}
                             onChange={handleInputChange}
                         >
-                            <option value="AVAILABLE">Available</option>
-                            <option value="BOOKED">Booked</option>
-                            <option value="CANCELLED">Cancelled</option>
+                            <option value="AVAILABLE">Доступен</option>
+                            <option value="BOOKED">Забронирован</option>
+                            <option value="CANCELLED">Отменён</option>
                         </select>
                     </div>
 
@@ -236,25 +236,25 @@ const FlightManagement = () => {
                     </button>
                     {editingId && (
                         <button type="button" onClick={resetForm}>
-                            Cancel
+                            Отмена
                         </button>
                     )}
                 </form>
             </div>
 
             <div className="tickets-list">
-                <h2>All Tickets</h2>
+                <h2>Все билеты</h2>
                 <table>
                     <thead>
                         <tr>
-                            <th>Flight Number</th>
-                            <th>Route</th>
-                            <th>Departure</th>
-                            <th>Arrival</th>
-                            <th>Seat</th>
-                            <th>Cost</th>
-                            <th>Status</th>
-                            <th>Actions</th>
+                            <th>Номер перелёта</th>
+                            <th>Маршрут</th>
+                            <th>Отправление</th>
+                            <th>Прибытие</th>
+                            <th>Номер места</th>
+                            <th>Стоимость</th>
+                            <th>Статус</th>
+                            <th>Действия</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -268,8 +268,8 @@ const FlightManagement = () => {
                                 <td>{flight.cost}</td>
                                 <td>{flight.status}</td>
                                 <td>
-                                    <button onClick={() => handleEdit(flight)}>Edit</button>
-                                    <button onClick={() => handleDelete(flight.id)}>Delete</button>
+                                    <button onClick={() => handleEdit(flight)}>Изменить</button>
+                                    <button onClick={() => handleDelete(flight.id)}>Удалить</button>
                                 </td>
                             </tr>
                         ))}

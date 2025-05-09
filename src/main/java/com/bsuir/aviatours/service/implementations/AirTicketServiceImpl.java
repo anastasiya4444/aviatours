@@ -2,6 +2,7 @@ package com.bsuir.aviatours.service.implementations;
 
 import com.bsuir.aviatours.model.AirTicket;
 import com.bsuir.aviatours.model.Role;
+import com.bsuir.aviatours.model.Route;
 import com.bsuir.aviatours.repository.AirTicketRepository;
 import com.bsuir.aviatours.service.business.adapter.DateTimeAdapter;
 import com.bsuir.aviatours.service.interfaces.EntityService;
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 
 @Service
@@ -18,6 +21,7 @@ public class AirTicketServiceImpl implements EntityService<AirTicket> {
 
     private final AirTicketRepository entityRepository;
     private DateTimeAdapter dateTimeAdapter;
+    private RouteServiceImpl routeServiceImpl;
 
     public AirTicketServiceImpl(AirTicketRepository entityRepository) {
         this.entityRepository = entityRepository;
@@ -112,5 +116,27 @@ public class AirTicketServiceImpl implements EntityService<AirTicket> {
         }
 
         return entityRepository.findAll(spec);
+    }
+
+    public List<AirTicket> getAvailableTickets() {
+        return entityRepository.findByRouteIsNullAndStatus("AVAILABLE");
+    }
+
+    public AirTicket assignToRoute(int ticketId, int routeId) {
+        AirTicket ticket = findEntityById(ticketId);
+        Route route = routeServiceImpl.findEntityById(routeId);
+
+        ticket.setRoute(route);
+        ticket.setStatus("ASSIGNED");
+
+        return entityRepository.save(ticket);
+    }
+
+    public List<AirTicket> getAvailableTicketsByRoute(Integer routeId) {
+        return entityRepository.findByRouteIdAndStatus(routeId, "AVAILABLE");
+    }
+
+    public List<AirTicket> findAvailableTickets(String departureAirportCode, String arrivalAirportCode, LocalDateTime departureDateTime) {
+        return entityRepository.findByDepartureAirportCodeAndArrivalAirportCodeAndDepartureTime(departureAirportCode, arrivalAirportCode, departureDateTime.toInstant(ZoneOffset.UTC));
     }
 }

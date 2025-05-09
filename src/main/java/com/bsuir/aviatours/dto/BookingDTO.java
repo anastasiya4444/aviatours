@@ -2,19 +2,41 @@ package com.bsuir.aviatours.dto;
 
 import com.bsuir.aviatours.model.Booking;
 import com.bsuir.aviatours.model.Payment;
+import com.bsuir.aviatours.model.Room;
+import jakarta.persistence.Column;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 
 public class BookingDTO {
     private Integer id;
     private RouteDTO route;
     private UserDTO user;
-    private Payment payment;
+    private PaymentDTO payment;
     private Instant createdAt;
+    private Room room;
+
+    public Room getRoom() {
+        return room;
+    }
+
+    public void setRoom(Room room) {
+        this.room = room;
+    }
+
+    public BigDecimal getTotalCost() {
+        return totalCost;
+    }
+
+    public void setTotalCost(BigDecimal totalCost) {
+        this.totalCost = totalCost;
+    }
+
+    private BigDecimal totalCost;
 
     public BookingDTO() {}
 
-    public BookingDTO(Integer id, Instant createdAt, Payment payment, UserDTO user, RouteDTO route) {
+    public BookingDTO(Integer id, Instant createdAt, PaymentDTO payment, UserDTO user, RouteDTO route) {
         this.id = id;
         this.createdAt = createdAt;
         this.payment = payment;
@@ -26,15 +48,16 @@ public class BookingDTO {
         Booking booking = new Booking();
         booking.setId(id);
         booking.setCreatedAt(createdAt);
-        if(payment.getId() != null){
-            booking.setPayment(payment);
+        if(payment != null){
+            booking.setPayment(payment.toEntity());
         }
-        if(user.getId() != null){
+        if(user != null){
             booking.setUser(user.toEntity());
         }
-        if(route.getId() != null){
+        if(route != null){
             booking.setRoute(route.toEntity());
         }
+        booking.setTotalCost(totalCost);
         return booking;
     }
 
@@ -44,13 +67,16 @@ public class BookingDTO {
             bookingDTO.setId(booking.getId());
             bookingDTO.setCreatedAt(booking.getCreatedAt());
             if(booking.getPayment() != null){
-                bookingDTO.setPayment(booking.getPayment());
+                bookingDTO.setPayment(PaymentDTO.fromEntity(booking.getPayment()));
             }
             if(booking.getUser() != null){
                 bookingDTO.setUser(UserDTO.fromEntity(booking.getUser()));
             }
             if(booking.getRoute() != null){
                 bookingDTO.setRoute(RouteDTO.fromEntity(booking.getRoute()));
+            }
+            if(booking.getTotalCost() != null){
+                bookingDTO.setTotalCost(booking.getTotalCost());
             }
         }
         return bookingDTO;
@@ -80,11 +106,11 @@ public class BookingDTO {
         this.id = id;
     }
 
-    public Payment getPayment() {
+    public PaymentDTO getPayment() {
         return payment;
     }
 
-    public void setPayment(Payment payment) {
+    public void setPayment(PaymentDTO payment) {
         this.payment = payment;
     }
 

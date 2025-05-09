@@ -5,11 +5,6 @@ import com.bsuir.aviatours.service.business.adapter.DateTimeAdapter;
 import com.bsuir.aviatours.service.business.adapter.IsoDateTimeAdapter;
 
 import java.math.BigDecimal;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 
 public class AirTicketDTO {
     private Integer id;
@@ -56,9 +51,9 @@ public class AirTicketDTO {
         if(source.passenger != null){
             this.passenger = source.passenger;
         }
-        if(source.route != null){
-            this.status = source.status;
-        }
+//        if(source.route != null){
+//            this.status = source.status;
+//        }
 
 
     }

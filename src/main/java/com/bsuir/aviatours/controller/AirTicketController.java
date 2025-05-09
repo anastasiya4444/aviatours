@@ -57,7 +57,13 @@ public class AirTicketController {
         AirTicket updatedTicket = airTicketEntityService.updateEntity(airTicketDTO.toEntity());
         return ResponseEntity.ok(AirTicketDTO.fromEntity(updatedTicket));
     }
-
+    @PutMapping("/{id}/update")
+    public ResponseEntity<AirTicketDTO> update(@PathVariable int id, @RequestBody AirTicketDTO airTicketDTO) {
+        airTicketDTO.setId(id);
+        AirTicket ticket = airTicketEntityService.findEntityById(id);
+        AirTicket updatedTicket = airTicketEntityService.updateEntity(ticket);
+        return ResponseEntity.ok(AirTicketDTO.fromEntity(updatedTicket));
+    }
     @PostMapping("/batch_create")
     public ResponseEntity<List<AirTicketDTO>> batchCreate(@RequestBody BatchCreateRequest request) {
         List<AirTicket> newTickets = new ArrayList<>();
@@ -82,6 +88,38 @@ public class AirTicketController {
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/available")
+    public ResponseEntity<List<AirTicketDTO>> getAvailableTickets() {
+        List<AirTicketDTO> availableTickets = airTicketEntityService.getAvailableTickets().stream()
+                .map(AirTicketDTO::fromEntity)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(availableTickets);
+    }
+    @GetMapping("/available_route")
+    public ResponseEntity<List<AirTicketDTO>> getAvailableTicketsByRoute(
+            @RequestParam(required = false) Integer routeId) {
+
+        List<AirTicket> tickets;
+        if (routeId != null) {
+            tickets = airTicketEntityService.getAvailableTicketsByRoute(routeId);
+        } else {
+            tickets = airTicketEntityService.getAvailableTickets();
+        }
+
+        List<AirTicketDTO> result = tickets.stream()
+                .map(AirTicketDTO::fromEntity)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(result);
+    }
+    @PutMapping("/{id}/assignRoute")
+    public ResponseEntity<AirTicketDTO> assignToRoute(
+            @PathVariable int id,
+            @RequestParam int routeId) {
+        AirTicket updatedTicket = airTicketEntityService.assignToRoute(id, routeId);
+        return ResponseEntity.ok(AirTicketDTO.fromEntity(updatedTicket));
     }
     @GetMapping("/filter")
     public ResponseEntity<List<AirTicketDTO>> filterTickets(

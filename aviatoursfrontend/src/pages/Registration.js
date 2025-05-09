@@ -11,29 +11,39 @@ export default function Registration() {
     const navigate = useNavigate();
     const { login } = useAuth();
 
+    const validateUsername = (username) => {
+        const usernameRegex = /^[A-Za-z0-9]{3,20}$/; 
+        return usernameRegex.test(username);
+    };
+
+    const validatePassword = (password) => {
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/;
+        return passwordRegex.test(password);
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
-        const formData = {
-            username,
-            password
-        };
+        setError('');
+        setSuccessMessage('');
+
+        if (!validateUsername(username)) {
+            setError('Логин должен содержать от 3 до 20 символов и состоять только из цифр и букв латинского алфавита.');
+            return;
+        }
+
+        if (!validatePassword(password)) {
+            setError('Пароль должен содержать не менее 8 символов, включая хотя бы одну заглавную и одну строчную букву, а также цифру.');
+            return;
+        }
+
+        const formData = { username, password };
 
         try {
             const response = await axios.post('http://localhost:8080/register', formData, {
                 withCredentials: true 
             });
+
             if (response.status === 200 || response.status === 201) {
-                login(); 
-                setSuccessMessage('Registration successful! Redirecting to your account...');
-                setTimeout(() => {
-                    navigate('/login'); 
-                }, 2000);
-            } else {
-                const errorText = response.data.message || 'Login failed. Please try again!';
-                setError(errorText);
-            }
-            if (response.status === 201) {
                 const loginData = { username, password }; 
                 const loginResponse = await axios.post('http://localhost:8080/login', loginData, {
                     withCredentials: true 
@@ -41,64 +51,50 @@ export default function Registration() {
 
                 if (loginResponse.status === 200) {
                     login(); 
-                    setSuccessMessage('Registration successful! Redirecting to your account...');
+                    setSuccessMessage('Регистрация успешна! Перенаправление на вашу учетную запись...');
                     setTimeout(() => {
                         navigate('/account'); 
                     }, 2000);
                 } else {
-                    const errorText = loginResponse.data.message || 'Login failed. Please try again!';
+                    const errorText = loginResponse.data.message || 'Ошибка входа. Пожалуйста, попробуйте еще раз!';
                     setError(errorText);
                 }
             } else {
-                const errorText = response.data.message || 'Registration failed. Please try again!';
+                const errorText = response.data.message || 'Ошибка регистрации. Пожалуйста, попробуйте еще раз!';
                 setError(errorText);
             }
         } catch (err) {
-            setError('An error occurred during user registration');
+            setError('Произошла ошибка во время регистрации пользователя');
         }
     };
 
     return (
         <div>
             <div className="form-container">
-            <h2>Регистрация</h2>
-            <form onSubmit={handleSubmit}>
-                <div  className="form-group">
-                    
+                <h2>Регистрация</h2>
+                <form onSubmit={handleSubmit}>
+                    <div className="form-group">
+                        <label>Логин:</label>
                         <input
                             type="text"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
                             required
                         />
-                   <label>
-                   Логин: </label>
-                </div>
-                <div className="form-group">
-                    
+                    </div>
+                    <div className="form-group">
+                        <label>Пароль:</label>
                         <input
                             type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             required
                         />
-                    <label>
-                    Пароль:</label>
-                </div>
-                {error && (
-                    <div>
-                        {error}
                     </div>
-                )}
-                {successMessage && (
-                    <div>
-                        {successMessage}
-                    </div>
-                )}
-                <button type="submit">
-                    Регистрация
-                </button>
-            </form>
+                    {error && <div className="error-message">{error}</div>}
+                    {successMessage && <div className="success-message">{successMessage}</div>}
+                    <button type="submit">Регистрация</button>
+                </form>
             </div>
         </div>
     );

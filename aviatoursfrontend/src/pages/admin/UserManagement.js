@@ -120,13 +120,13 @@ const UserManagement = () => {
 
     return (
         <div className="page-container">
-            <h1>User Management</h1>
+            <h1>Управление пользователями</h1>
 
             <div className="form-section">
-                <h2>{editingId ? 'Edit User' : 'Add New User'}</h2>
+                <h2>{editingId ? 'Редактировать пользователя' : 'Добавить пользователя'}</h2>
                 <form onSubmit={handleSubmit}>
                     <div>
-                        <label>Username:</label>
+                        <label>Логин:</label>
                         <input
                             type="text"
                             name="username"
@@ -138,7 +138,7 @@ const UserManagement = () => {
                     </div>
 
                     <div>
-                        <label>Password:</label>
+                        <label>Пароль:</label>
                         <input
                             type="password"
                             name="password"
@@ -151,7 +151,7 @@ const UserManagement = () => {
                     </div>
 
                     <div>
-                        <label>Role:</label>
+                        <label>Роль:</label>
                         <select
                             name="roleId"
                             value={formData.role?.id || ''}
@@ -168,7 +168,7 @@ const UserManagement = () => {
 
                     <div className="form-actions">
                         <button type="submit" className="btn-primary">
-                            {editingId ? 'Update User' : 'Add User'}
+                            {editingId ? 'Редактировать' : 'Добавить'}
                         </button>
                         {editingId && (
                             <button
@@ -176,7 +176,7 @@ const UserManagement = () => {
                                 onClick={resetForm}
                                 className="btn-secondary"
                             >
-                                Cancel
+                                Отменить
                             </button>
                         )}
                     </div>
@@ -184,14 +184,14 @@ const UserManagement = () => {
             </div>
 
             <div className="table-section">
-                <h2>All Users</h2>
+                <h2>Все пользователи</h2>
                 <table className="data-table">
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>Username</th>
-                            <th>Role</th>
-                            <th>Actions</th>
+                            <th>Логин</th>
+                            <th>Роль</th>
+                            <th>Действия</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -205,13 +205,13 @@ const UserManagement = () => {
                                         onClick={() => handleEdit(user)}
                                         className="btn-edit"
                                     >
-                                        Edit
+                                        Обновить
                                     </button>
                                     <button
                                         onClick={() => handleDelete(user.id)}
                                         className="btn-delete"
                                     >
-                                        Delete
+                                        Удалить
                                     </button>
                                 </td>
                             </tr>

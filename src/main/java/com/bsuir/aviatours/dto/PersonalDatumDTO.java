@@ -124,6 +124,8 @@ public class PersonalDatumDTO {
         personalDatum.setMiddleName(this.middleName);
         personalDatum.setLastName(this.lastName);
         personalDatum.setPassportType(this.passportType);
+        personalDatum.setCitizenship(this.citizenship);
+        personalDatum.setGender(this.gender);
         personalDatum.setPassportNumber(this.passportNumber);
         personalDatum.setPassportIssueDate(this.passportIssueDate);
         personalDatum.setPassportExpiryDate(this.passportExpiryDate);

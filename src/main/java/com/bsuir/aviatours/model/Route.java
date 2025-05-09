@@ -4,7 +4,10 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "route")
@@ -30,6 +33,23 @@ public class Route {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "tour_id")
     private Tour tour;
+
+    @OneToMany(mappedBy = "route")
+    private Set<AirTicket> airTickets = new LinkedHashSet<>();
+
+    public Route(Integer routeId) {
+        this.id = routeId;
+    }
+
+    public Route() {}
+
+    public Set<AirTicket> getAirTickets() {
+        return airTickets;
+    }
+
+    public void setAirTickets(Set<AirTicket> airTickets) {
+        this.airTickets = airTickets;
+    }
 
     public Tour getTour() {
         return tour;

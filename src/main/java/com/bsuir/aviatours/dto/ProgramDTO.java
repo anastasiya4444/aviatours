@@ -1,15 +1,19 @@
 package com.bsuir.aviatours.dto;
 
+import com.bsuir.aviatours.model.Day;
 import com.bsuir.aviatours.model.Program;
 import jakarta.persistence.*;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.Instant;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 public class ProgramDTO {
     private Integer id;
     private String description;
     private Instant createdAt;
+    private Set<DayDTO> days = new LinkedHashSet<>(); // Change to DayDTO
 
     public ProgramDTO() {}
 
@@ -19,7 +23,7 @@ public class ProgramDTO {
         this.createdAt = createdAt;
     }
 
-    public Program toEntity(){
+    public Program toEntity() {
         Program program = new Program();
         program.setId(id);
         program.setDescription(description);
@@ -27,9 +31,9 @@ public class ProgramDTO {
         return program;
     }
 
-    public static ProgramDTO fromEntity(Program program){
+    public static ProgramDTO fromEntity(Program program) {
         ProgramDTO programDTO = new ProgramDTO();
-        if(program.getId() != null){
+        if (program.getId() != null) {
             programDTO.setId(program.getId());
             programDTO.setDescription(program.getDescription());
             programDTO.setCreatedAt(program.getCreatedAt());
@@ -61,4 +65,11 @@ public class ProgramDTO {
         this.createdAt = createdAt;
     }
 
+    public Set<DayDTO> getDays() {
+        return days;
+    }
+
+    public void setDays(Set<DayDTO> days) {
+        this.days = days;
+    }
 }

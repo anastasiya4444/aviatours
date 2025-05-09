@@ -164,17 +164,17 @@ const RoomManagement = ({ hotelId, onBack, hotelData }) => {
   return (
     <div>
       <button onClick={onBack} className="btn-back">
-        ← Back to Hotels
+        ← Вернуться к управлению отелями
       </button>
 
-      <h2>Managing Rooms for: {hotelData?.description}</h2>
-      <p>Address: {hotelData?.address}</p>
+      <h2>Управление комнатами для: {hotelData?.description}</h2>
+      <p>Адрес: {hotelData?.address}</p>
 
       <div className="form-section">
-        <h3>{editingId ? 'Edit Room' : 'Add New Room'}</h3>
+        <h3>{editingId ? 'Изменить' : 'Добавить'}</h3>
         <form onSubmit={handleSubmit}>
           <div>
-            <label>View:</label>
+            <label>Вид:</label>
             <input
               type="text"
               name="view"
@@ -187,7 +187,7 @@ const RoomManagement = ({ hotelId, onBack, hotelData }) => {
 
           <div className="form-row">
             <div>
-              <label>Beds:</label>
+              <label>Кровати:</label>
               <input
                 type="number"
                 name="beds"
@@ -199,7 +199,7 @@ const RoomManagement = ({ hotelId, onBack, hotelData }) => {
             </div>
 
             <div>
-              <label>Max Guests:</label>
+              <label>Максимальное количество гостей:</label>
               <input
                 type="number"
                 name="maxGuests"
@@ -213,7 +213,7 @@ const RoomManagement = ({ hotelId, onBack, hotelData }) => {
 
           <div className="form-row">
             <div>
-              <label>Size (m²):</label>
+              <label>Размер (м²):</label>
               <input
                 type="number"
                 name="sizeM2"
@@ -226,7 +226,7 @@ const RoomManagement = ({ hotelId, onBack, hotelData }) => {
             </div>
 
             <div>
-              <label>Type:</label>
+              <label>Тип:</label>
               <select
                 name="type"
                 value={formData.type}
@@ -249,7 +249,7 @@ const RoomManagement = ({ hotelId, onBack, hotelData }) => {
                   checked={formData.bath}
                   onChange={handleInputChange}
                 />
-                Private Bath
+                Личная ванная
               </label>
             </div>
 
@@ -261,27 +261,27 @@ const RoomManagement = ({ hotelId, onBack, hotelData }) => {
                   checked={formData.terrace}
                   onChange={handleInputChange}
                 />
-                Terrace/Balcony
+                Терасса/Балкон
               </label>
             </div>
           </div>
 
           <div className="form-row">
             <div>
-              <label>Cost per night:</label>
+              <label>Стоимость за ночь:</label>
               <input
                 type="number"
                 name="cost"
                 value={formData.cost}
                 onChange={handleInputChange}
                 min="0"
-                step="0.01"
+                step="1"
                 required
               />
             </div>
 
             <div>
-              <label>Available Rooms:</label>
+              <label>Доступные комнаты:</label>
               <input
                 type="number"
                 name="availableRooms"
@@ -294,7 +294,7 @@ const RoomManagement = ({ hotelId, onBack, hotelData }) => {
           </div>
 
           <div>
-            <label>Room Image:</label>
+            <label>Фото комнат:</label>
             <input
               type="file"
               accept="image/*"
@@ -322,7 +322,7 @@ const RoomManagement = ({ hotelId, onBack, hotelData }) => {
             </button>
             {editingId && (
               <button type="button" onClick={resetForm} className="btn-secondary">
-                Cancel
+                Отмена
               </button>
             )}
           </div>
@@ -330,19 +330,19 @@ const RoomManagement = ({ hotelId, onBack, hotelData }) => {
       </div>
 
       <div className="table-section">
-        <h3>Rooms List</h3>
+        <h3>Список комнат</h3>
         <table className="data-table">
           <thead>
             <tr>
-              <th>Image</th>
-              <th>Type</th>
-              <th>View</th>
-              <th>Beds</th>
-              <th>Guests</th>
-              <th>Size</th>
-              <th>Cost</th>
-              <th>Available</th>
-              <th>Actions</th>
+              <th>Фото</th>
+              <th>Тип</th>
+              <th>Вид</th>
+              <th>Кровати</th>
+              <th>Макс. кол. человек</th>
+              <th>Размер</th>
+              <th>Стоимость</th>
+              <th>Доступность</th>
+              <th>Действия</th>
             </tr>
           </thead>
           <tbody>
@@ -383,7 +383,7 @@ const RoomManagement = ({ hotelId, onBack, hotelData }) => {
                       borderRadius: '4px',
                       color: '#999'
                     }}>
-                      No Image
+                      Нет фото
                     </div>
                   )}
                 </td>
@@ -391,8 +391,8 @@ const RoomManagement = ({ hotelId, onBack, hotelData }) => {
                 <td>{room.view}</td>
                 <td>{room.beds}</td>
                 <td>{room.maxGuests}</td>
-                <td>{room.sizeM2} m²</td>
-                <td>${room.cost.toFixed(2)}</td>
+                <td>{room.sizeM2} м²</td>
+                <td>{room.cost.toFixed(2)} руб.</td>
                 <td>{room.availableRooms}</td>
                 <td className="actions">
                   <button
@@ -408,7 +408,7 @@ const RoomManagement = ({ hotelId, onBack, hotelData }) => {
                       cursor: 'pointer'
                     }}
                   >
-                    Edit
+                    Обновить
                   </button>
                   <button
                     onClick={() => handleDelete(room.id)}
@@ -422,7 +422,7 @@ const RoomManagement = ({ hotelId, onBack, hotelData }) => {
                       cursor: 'pointer'
                     }}
                   >
-                    Delete
+                    Удалить
                   </button>
                 </td>
               </tr>

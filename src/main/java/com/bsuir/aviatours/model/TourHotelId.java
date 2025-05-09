@@ -15,6 +15,13 @@ public class TourHotelId implements java.io.Serializable {
     @Column(name = "hotel_id", nullable = false)
     private Integer hotelId;
 
+    public TourHotelId(Integer tourId, Integer hotelId) {
+        this.tourId = tourId;
+        this.hotelId = hotelId;
+    }
+
+    public TourHotelId() {}
+
     public Integer getTourId() {
         return tourId;
     }

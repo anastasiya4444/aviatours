@@ -56,6 +56,12 @@ public class Room {
     @Column(name = "image_urls")
     private String imageUrls;
 
+    public Room(Integer roomId) {
+        this.id = roomId;
+    }
+
+    public Room() {}
+
     public String getImageUrls() {
         return imageUrls;
     }

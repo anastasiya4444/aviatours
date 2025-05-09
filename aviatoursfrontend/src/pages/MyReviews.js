@@ -139,15 +139,15 @@ const MyReviews = () => {
 
   return (
     <div className="page-container">
-      <h1>Reviews {currentUser && `(Hello, ${currentUser.username})`}</h1>
+      <h1>Отзывы</h1>
       
       {error && <div className="error">{error}</div>}
 
       <div className="form-section">
-        <h2>{formData.id ? 'Edit Review' : 'Add New Review'}</h2>
+        <h2>{formData.id ? 'Редактировать' : 'Добавить'}</h2>
         <form onSubmit={handleSubmit}>
           <div>
-            <label>Rating (1-5):</label>
+            <label>Рейтинг (1-5):</label>
             <select
               name="rating"
               value={formData.rating}
@@ -162,7 +162,7 @@ const MyReviews = () => {
           </div>
 
           <div>
-            <label>Review Text:</label>
+            <label>Отзыв:</label>
             <textarea
               name="reviewText"
               value={formData.reviewText}
@@ -184,7 +184,7 @@ const MyReviews = () => {
                 className="btn-secondary"
                 disabled={isLoading}
               >
-                Cancel
+                Отменить
               </button>
             )}
           </div>
@@ -192,9 +192,9 @@ const MyReviews = () => {
       </div>
 
       <div className="reviews-section">
-        <h2>All Reviews</h2>
+        <h2>Все отзывы</h2>
         {allReviews.length === 0 ? (
-          <p>No reviews yet</p>
+          <p>Пока нет отзывов</p>
         ) : (
           <div className="reviews-list">
             {allReviews.map((review, index) => (
@@ -207,7 +207,7 @@ const MyReviews = () => {
                     {'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}
                   </span>
                   <span className="review-author">
-                    by {review.user?.username || 'Anonymous'}
+                     {review.user?.username || 'Anonymous'}
                   </span>
                   <span className="review-date">
                     {review.createdAt ? new Date(review.createdAt).toLocaleDateString() : ''}
@@ -222,14 +222,14 @@ const MyReviews = () => {
                       className="btn-edit"
                       disabled={isLoading}
                     >
-                      Edit
+                      Редактировать
                     </button>
                     <button 
                       onClick={() => handleDelete(review)}
                       className="btn-delete"
                       disabled={isLoading}
                     >
-                      Delete
+                      Удалить
                     </button>
                   </div>
                 )}

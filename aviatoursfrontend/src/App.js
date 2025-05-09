@@ -36,7 +36,8 @@ import HotelManagement from './pages/admin/HotelManagement';
 import TourManagement from './pages/admin/TourManagement';
 import FlightManagement from './pages/admin/FlightManagement';
 import UserManagement from './pages/admin/UserManagement';
-
+import BookingManagement from './pages/admin/BookingManagement';
+import HomePage from './pages/HomePage';
 
 const App = () => {
     return (
@@ -47,6 +48,7 @@ const App = () => {
                     <main className="main-content">
                         <Routes>
                             {/* Публичные маршруты */}
+                            <Route path="/" element={<HomePage />} />
                             <Route path="/login" element={<Login />} />
                             <Route path="/register" element={<Registration />} />
                             
@@ -64,7 +66,7 @@ const App = () => {
                                 <Route path="/my-bookings" element={<MyBookings />} />
                                 
                                 {/* Процесс бронирования */}
-                                <Route path="/tour/:id" element={<TourDetail />} />
+                                <Route path="/tour/:tourId" element={<TourDetail />} />
                                 <Route path="/book-flight/:id" element={<FlightBooking />} />
                                 <Route path="/guest-info" element={<GuestInfo />} />
                                 <Route path="/select-room" element={<RoomSelection />} />
@@ -78,6 +80,7 @@ const App = () => {
                                 <Route path="/admin/tours" element={<TourManagement />} />
                                 <Route path="/admin/flights" element={<FlightManagement />} />
                                 <Route path="/admin/users" element={<UserManagement />} />
+                                <Route path="/admin/bookings" element={<BookingManagement />} />
                             </Route>
                             
                             {/* Стартовая страница */}

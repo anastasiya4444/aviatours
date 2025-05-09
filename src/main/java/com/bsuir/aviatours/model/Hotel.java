@@ -5,6 +5,8 @@ import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "hotel")
@@ -38,6 +40,17 @@ public class Hotel {
     @Lob
     @Column(name = "image_urls")
     private String imageUrls;
+
+    @OneToMany(mappedBy = "hotel")
+    private Set<Room> rooms = new LinkedHashSet<>();
+
+    public Set<Room> getRooms() {
+        return rooms;
+    }
+
+    public void setRooms(Set<Room> rooms) {
+        this.rooms = rooms;
+    }
 
     public String getImageUrls() {
         return imageUrls;

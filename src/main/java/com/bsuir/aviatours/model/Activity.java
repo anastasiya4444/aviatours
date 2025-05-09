@@ -5,6 +5,8 @@ import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "activity")
@@ -13,10 +15,6 @@ public class Activity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "activity_id", nullable = false)
     private Integer id;
-
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "day_id", nullable = false)
-    private Day day;
 
     @Column(name = "activity_type", nullable = false, length = 45)
     private String activityType;
@@ -48,6 +46,23 @@ public class Activity {
     @Lob
     @Column(name = "image_urls")
     private String imageUrls;
+    @ManyToMany(mappedBy = "activities")
+    private Set<Day> days = new HashSet<>();
+
+    public Activity() {}
+
+    public Activity(int id, String description){
+        this.id = id;
+        this.description = description;
+    }
+
+    public Set<Day> getDays() {
+        return days;
+    }
+
+    public void setDays(Set<Day> days) {
+        this.days = days;
+    }
 
     public String getImageUrls() {
         return imageUrls;
@@ -71,14 +86,6 @@ public class Activity {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public Day getDay() {
-        return day;
-    }
-
-    public void setDay(Day day) {
-        this.day = day;
     }
 
     public String getActivityType() {

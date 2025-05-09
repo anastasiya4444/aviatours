@@ -19,13 +19,12 @@ const HotelManagement = () => {
   });
   const [selectedImage, setSelectedImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
-
   const mealTypes = [
-    { value: 'RO', label: 'Room Only' },
-    { value: 'BB', label: 'Bed & Breakfast' },
-    { value: 'HB', label: 'Half Board' },
-    { value: 'FB', label: 'Full Board' },
-    { value: 'AI', label: 'All Inclusive' }
+    { value: 'RO', label: 'Только номер' },
+    { value: 'BB', label: 'Номер с завтраком' },
+    { value: 'HB', label: 'Полупансион' },
+    { value: 'FB', label: 'Полный пансион' },
+    { value: 'AI', label: 'Все включено' }
   ];
 
   useEffect(() => {
@@ -37,14 +36,9 @@ const HotelManagement = () => {
       const response = await api.get('/hotel/getAll');
       setHotels(response.data);
     } catch (error) {
-      console.error('Error fetching hotels:', error);
-      alert('Failed to load hotels');
+      console.error('Ошибка при загрузке отелей:', error);
+      alert('Не удалось загрузить отели');
     }
-  };
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleImageChange = (e) => {
@@ -73,15 +67,20 @@ const HotelManagement = () => {
       );
       return response.data;
     } catch (error) {
-      console.error('Error uploading image:', error);
-      alert('Failed to upload image');
+      console.error('Ошибка при загрузке изображения:', error);
+      alert('Не удалось загрузить изображение');
       return null;
     }
   };
 
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    
     try {
       if (editingId) {
         await api.put('/hotel/update', { ...formData, id: editingId });
@@ -94,12 +93,12 @@ const HotelManagement = () => {
           await uploadImage(response.data.id);
         }
       }
-
+      
       fetchHotels();
       resetForm();
     } catch (error) {
-      console.error('Error:', error.response?.data || error.message);
-      alert('Operation failed');
+      console.error('Ошибка:', error.response?.data || error.message);
+      alert('Операция не удалась');
     }
   };
 
@@ -112,18 +111,17 @@ const HotelManagement = () => {
       hotelFeatures: hotel.hotelFeatures
     });
     setEditingId(hotel.id);
-    setImagePreview(hotel.imageUrls ? `http://localhost:8080/hotel/images/${hotel.imageUrls}` : null);
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this hotel?')) return;
-
+    if (!window.confirm('Вы уверены, что хотите удалить этот отель?')) return;
+    
     try {
       await api.delete(`/hotel/${id}`);
       fetchHotels();
     } catch (error) {
-      console.error('Error deleting hotel:', error);
-      alert('Failed to delete hotel');
+      console.error('Ошибка при удалении отеля:', error);
+      alert('Не удалось удалить отель');
     }
   };
 
@@ -143,73 +141,170 @@ const HotelManagement = () => {
 
   return (
     <div className="page-container">
-      <h1>Hotel Management</h1>
-
+      <h1>Управление отелями</h1>
+      
       {!showRooms ? (
         <>
           <div className="form-section">
-            <h2>{editingId ? 'Edit Hotel' : 'Add New Hotel'}</h2>
+            <h2>{editingId ? 'Редактировать отель' : 'Добавить новый отель'}</h2>
             <form onSubmit={handleSubmit}>
+              
+              <div>
+                <label>Описание:</label>
+                <textarea
+                  name="description"
+                  value={formData.description}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+
+              <div>
+                <label>Адрес:</label>
+                <input
+                  type="text"
+                  name="address"
+                  value={formData.address}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+
+              <div>
+                <label>Тип питания:</label>
+                <select
+                  name="mealType"
+                  value={formData.mealType}
+                  onChange={handleInputChange}
+                  required
+                >
+                  {mealTypes.map(type => (
+                    <option key={type.value} value={type.value}>
+                      {type.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label>Рейтинг:</label>
+                <select
+                    name="rating"
+                    value={formData.rating}
+                    onChange={handleInputChange}
+                    required
+                >
+                    <option value="" disabled>Выберите рейтинг</option>
+                    {[1, 2, 3, 4, 5].map((rating) => (
+                        <option key={rating} value={rating}>
+                            {rating}
+                        </option>
+                    ))}
+                </select>
+              </div>
+
+              <div>
+                <label>Особенности (через запятую):</label>
+                <input
+                  type="text"
+                  name="hotelFeatures"
+                  value={formData.hotelFeatures}
+                  onChange={handleInputChange}
+                  placeholder="WiFi, Бассейн, Спа и т.д."
+                />
+              </div>
+              <div>
+            <label>Картинка:</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+            />
+            {imagePreview && (
+              <div style={{ marginTop: '10px' }}>
+                <img
+                  src={imagePreview}
+                  alt="Preview"
+                  style={{
+                    maxWidth: '150px',
+                    maxHeight: '150px',
+                    borderRadius: '4px',
+                    border: '1px solid #ddd',
+                  }}
+                />
+              </div>
+            )}
+          </div>
+              <div className="form-actions">
+                <button type="submit" className="btn-primary">
+                  {editingId ? 'Обновить отель' : 'Добавить отель'}
+                </button>
+                {editingId && (
+                  <button type="button" onClick={resetForm} className="btn-secondary">
+                    Отмена
+                  </button>
+                )}
+              </div>
             </form>
           </div>
 
           <div className="table-section">
-            <h2>All Hotels</h2>
+            <h2>Все отели</h2>
             <table className="data-table">
               <thead>
                 <tr>
-                  <th>Image</th>
+                  <th>Изображение</th>
                   <th>ID</th>
-                  <th>Description</th>
-                  <th>Address</th>
-                  <th>Meal Type</th>
-                  <th>Rating</th>
-                  <th>Actions</th>
+                  <th>Описание</th>
+                  <th>Адрес</th>
+                  <th>Тип питания</th>
+                  <th>Рейтинг</th>
+                  <th>Действия</th>
                 </tr>
               </thead>
               <tbody>
                 {hotels.map(hotel => (
                   <tr key={hotel.id}>
                     <td>
-                      {hotel.imageUrls ? (
-                        <div style={{
-                          width: '80px',
-                          height: '60px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center'
-                        }}>
-                          <img
-                            src={`http://localhost:8080/hotel/images/${hotel.imageUrls}`}
-                            alt="Hotel"
-                            style={{
-                              maxWidth: '100%',
-                              maxHeight: '100%',
-                              objectFit: 'cover',
-                              borderRadius: '4px',
-                              boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-                            }}
-                            onError={(e) => {
-                              e.target.onerror = null; 
-                              e.target.parentElement.innerHTML = 'No Image';
-                            }}
-                          />
-                        </div>
-                      ) : (
-                        <div style={{
-                          width: '80px',
-                          height: '60px',
-                          backgroundColor: '#f5f5f5',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          borderRadius: '4px',
-                          color: '#999'
-                        }}>
-                          No Image
-                        </div>
-                      )}
-                    </td>
+                       {hotel.imageUrls ? (
+                         <div style={{
+                           width: '80px',
+                           height: '60px',
+                           display: 'flex',
+                           alignItems: 'center',
+                           justifyContent: 'center'
+                         }}>
+                           <img
+                             src={`http://localhost:8080/hotel/images/${hotel.imageUrls}`}
+                             alt="Отель"
+                             style={{
+                               maxWidth: '100%',
+                               maxHeight: '100%',
+                               objectFit: 'cover',
+                               borderRadius: '4px',
+                               boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                             }}
+                             onError={(e) => {
+                               e.target.onerror = null; 
+                               e.target.parentElement.innerHTML = 'Нет изображения';
+                             }}
+                           />
+                         </div>
+                       ) : (
+                         <div style={{
+                           width: '80px',
+                           height: '60px',
+                           backgroundColor: '#f5f5f5',
+                           display: 'flex',
+                           alignItems: 'center',
+                           justifyContent: 'center',
+                           borderRadius: '4px',
+                           color: '#999'
+                         }}>
+                           Нет изображения
+                         </div>
+                       )}
+                     </td>
                     <td>{hotel.id}</td>
                     <td>{hotel.description.substring(0, 50)}...</td>
                     <td>{hotel.address.substring(0, 30)}...</td>
@@ -217,19 +312,19 @@ const HotelManagement = () => {
                     <td>{hotel.rating}</td>
                     <td className="actions">
                       <button onClick={() => handleEdit(hotel)} className="btn-edit">
-                        Edit
+                        Редактировать
                       </button>
-                      <button
-                        onClick={() => setShowRooms(hotel.id)}
+                      <button 
+                        onClick={() => setShowRooms(hotel.id)} 
                         className="btn-view"
                       >
-                        Rooms
+                        Номера
                       </button>
-                      <button
-                        onClick={() => handleDelete(hotel.id)}
+                      <button 
+                        onClick={() => handleDelete(hotel.id)} 
                         className="btn-delete"
                       >
-                        Delete
+                        Удалить
                       </button>
                     </td>
                   </tr>
@@ -239,9 +334,9 @@ const HotelManagement = () => {
           </div>
         </>
       ) : (
-        <RoomManagement
-          hotelId={showRooms}
-          onBack={() => setShowRooms(null)}
+        <RoomManagement 
+          hotelId={showRooms} 
+          onBack={() => setShowRooms(null)} 
           hotelData={hotels.find(h => h.id === showRooms)}
         />
       )}

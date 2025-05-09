@@ -11,7 +11,6 @@ import java.time.Instant;
 
 public class ActivityDTO {
     private Integer id;
-    private Day day;
     private String activityType;
     private Instant startDateTime;
     private Instant endDateTime;
@@ -24,10 +23,9 @@ public class ActivityDTO {
 
     public ActivityDTO() {}
 
-    public ActivityDTO(Integer id, Day day, String activityType, Instant startDateTime, Instant endDateTime,
+    public ActivityDTO(Integer id, String activityType, Instant startDateTime, Instant endDateTime,
                        String description, Integer initialCapacity, Integer booked, Instant createdAt, BigDecimal cost, String imageUrls) {
         this.id = id;
-        this.day = day;
         this.activityType = activityType;
         this.startDateTime = startDateTime;
         this.endDateTime = endDateTime;
@@ -42,7 +40,6 @@ public class ActivityDTO {
     public Activity toEntity(){
         Activity activity = new Activity();
         activity.setId(this.id);
-        activity.setDay(this.day);
         activity.setActivityType(this.activityType);
         activity.setStartDateTime(this.startDateTime);
         activity.setEndDateTime(this.endDateTime);
@@ -59,9 +56,6 @@ public class ActivityDTO {
         ActivityDTO activityDTO = new ActivityDTO();
         if(activity.getId() != null){
             activityDTO.setId(activity.getId());
-            if(activity.getDay() != null){
-                activityDTO.setDay(activity.getDay());
-            }
             activityDTO.setActivityType(activity.getActivityType());
             activityDTO.setStartDateTime(activity.getStartDateTime());
             activityDTO.setEndDateTime(activity.getEndDateTime());
@@ -97,14 +91,6 @@ public class ActivityDTO {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public Day getDay() {
-        return day;
-    }
-
-    public void setDay(Day day) {
-        this.day = day;
     }
 
     public String getActivityType() {
